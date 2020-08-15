@@ -6,6 +6,7 @@ def main():
     pygame.display.set_caption('PyChess')
 
     screen = pygame.display.set_mode([500, 500])
+    pygame.display.set_caption("Chess")
     running = True
 
     while running:
