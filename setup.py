@@ -9,6 +9,6 @@ setup(
     entry_points={'console_scripts': ['pychess=pychess.__main__:main']},
 
     install_requires=[
-        'pygame'
+        'pygame>=2.0.0<3.0.0'
     ],
 )
