@@ -83,7 +83,26 @@ class Bishop(Piece):
     texture_y = 2
 
     def scan_board(self):
-        pass
+        choices = full((8, 8), False)
+
+        for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            for pos in range(1, 8):
+                x = self.x + pos * orientation[0]
+                y = self.y + pos * orientation[1]
+
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
+
+                curr_piece = get_piece(x, y)
+                if curr_piece is not None:
+                    if curr_piece.black:
+                        choices[x][y] = True
+                    break
+
+                print(x, y)
+                choices[x][y] = True
+
+        return choices
 
 
 class Knight(Piece):
