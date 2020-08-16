@@ -4,7 +4,7 @@ from numpy import full
 from .util import is_occupied, render_board, render_pieces, get_piece
 from .variables import cell_size, window_padding
 
-board = full([], False)
+board = full((0, 0), False)
 
 green_dot_radius = int(cell_size / 4.5)
 green_dot_color = (11, 218, 81)
@@ -33,14 +33,11 @@ def handle(event: pygame.event):
         mouse_y = int((mouse_y - window_padding) / cell_size)
         global board
         piece = get_piece(mouse_x, mouse_y)
-        if piece is None:
-            board = full([], False)
-        else:
-            board = piece.scan_board()
+        board = full((0, 0), False) if piece is None else piece.scan_board()
 
 
 def render_bool_board(screen: pygame.display):
-    if board.size != 1:
+    if board.size:
         for x in range(8):
             for y in range(8):
                 if board[x][y]:

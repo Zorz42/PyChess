@@ -12,9 +12,7 @@ def main():
                 running = False
             else:
                 handle(event)
-
         render(screen)
-
     pygame.quit()
 
 

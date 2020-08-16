@@ -41,9 +41,6 @@ class Piece:
 class King(Piece):
     texture_y = 0
 
-    def __init__(self, x: int, y: int, black: bool):
-        super().__init__(x, y, black)
-
     def scan_board(self):
         bool_board = full((8, 8), False)
         for x in range(3):
@@ -54,3 +51,17 @@ class King(Piece):
                     bool_board[abs_x][abs_y] = True
                 bool_board[self.x][self.y] = False
         return bool_board
+
+
+class Queen(Piece):
+    texture_y = 0
+
+    def scan_board(self):
+        pass
+
+
+class Rooks(Piece):
+    texture_y = 0
+
+    def scan_board(self):
+        pass
