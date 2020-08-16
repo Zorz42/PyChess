@@ -37,8 +37,13 @@ def handle(event: pygame.event):
         if not board.choices[mouse_x][mouse_y]:
             return
 
-        print('Handle new position')
+        board.pending.x = mouse_x
+        board.pending.y = mouse_y
+
+        board.pending = None
         board.choices = full((8, 8), False)
+
+        # TODO: Run AI
 
 
 def render(screen: pygame.display):
