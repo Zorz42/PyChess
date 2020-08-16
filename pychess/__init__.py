@@ -48,18 +48,20 @@ def handle(event: pygame.event):
             board.choices = piece.scan_board()
             return
 
-        if board.choices[mouse_x][mouse_y]:
-            if piece:
-                board.pieces.remove(piece)
+        if not board.choices[mouse_x][mouse_y]:
+            return
 
-            board.pending.x = mouse_x
-            board.pending.y = mouse_y
+        if piece:
+            board.pieces.remove(piece)
 
-            board.pending = None
-            board.choices = full((8, 8), False)
+        board.pending.x = mouse_x
+        board.pending.y = mouse_y
 
-            # TODO: Check winner
-            # TODO: Run AI
+        board.pending = None
+        board.choices = full((8, 8), False)
+
+        # TODO: Check winner
+        # TODO: Run AI
 
 
 def render(screen: pygame.display):
