@@ -19,15 +19,14 @@ def init():
     window_size = cell_size * 8 + window_padding * 2
     screen = pygame.display.set_mode((window_size, window_size))
 
-    for color in ('black', 'white'):
-        is_black = True if color == 'black' else False
+    for is_black in (True, False):
         for pawn_x in range(8):
-            pawn_y = 1 if color == 'black' else 6
+            pawn_y = 1 if is_black else 6
             # board.pieces.append((Pawn(pawn_x, pawn_y, is_black)))
 
-        other_y = 0 if color == 'black' else 7
+        other_y = 0 if is_black else 7
         board.pieces.append(Rook(0, other_y, is_black))
-        #board.pieces.append(Knight(1, other_y, is_black))
+        board.pieces.append(Knight(1, other_y, is_black))
         board.pieces.append(Bishop(2, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
