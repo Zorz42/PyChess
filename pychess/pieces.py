@@ -93,7 +93,20 @@ class Knight(Piece):
     texture_y = 3
 
     def scan_board(self):
-        pass
+        choices = full((8, 8), False)
+
+        for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
+            x = self.x + target[0]
+            y = self.y + target[1]
+
+            if x < 0 or x > 7 or y < 0 or y > 7:
+                continue
+
+            curr_piece = get_piece(x, y)
+            if curr_piece is None or curr_piece.black:
+                choices[x][y] = True
+
+        return choices
 
 
 class Pawn(Piece):
