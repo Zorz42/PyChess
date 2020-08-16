@@ -100,7 +100,7 @@ class Knight(Piece):
             x = self.x + target[0]
             y = self.y + target[1]
 
-            if x > 0 or x < 7 or y < 0 or y > 7:
+            if x < 0 or x > 7 or y < 0 or y > 7:
                 continue
 
             curr_piece = get_piece(x, y)
