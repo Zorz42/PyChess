@@ -5,7 +5,7 @@ from .variables import cell_size, window_padding
 import os
 import pygame
 
-board = []
+pieces = []
 
 
 class Piece:
