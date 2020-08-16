@@ -1,11 +1,10 @@
-from numpy import full
-from abc import abstractmethod
-from .variables import cell_size, window_padding
-
 import os
-import pygame
+from abc import abstractmethod
 
-pieces = []
+import pygame
+from numpy import full
+
+from .variables import cell_size, window_padding
 
 
 class Piece:
@@ -42,15 +41,15 @@ class King(Piece):
     texture_y = 0
 
     def scan_board(self):
-        bool_board = full((8, 8), False)
+        choices = full((8, 8), False)
         for x in range(3):
             for y in range(3):
                 abs_x = self.x + x - 1
                 abs_y = self.y + y - 1
                 if 0 <= abs_x <= 8 and 0 <= abs_y <= 8:
-                    bool_board[abs_x][abs_y] = True
-                bool_board[self.x][self.y] = False
-        return bool_board
+                    choices[abs_x][abs_y] = True
+                choices[self.x][self.y] = False
+            return choices
 
 
 class Queen(Piece):
