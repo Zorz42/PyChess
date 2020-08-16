@@ -44,15 +44,16 @@ def handle(event: pygame.event):
         mouse_y = int((mouse_y - window_padding) / cell_size)
 
         piece = get_piece(mouse_x, mouse_y)
+        if piece and not piece.black:
+            board.pending = piece
+            board.choices = piece.scan_board()
+            return
+
+        if not board.choices[mouse_x][mouse_y]:
+            return
+
         if piece:
-            if not piece.black:
-                board.pending = piece
-                board.choices = piece.scan_board()
-                return
-            elif board.choices[mouse_x][mouse_y]:
-                board.pieces.remove(piece)
-            else:
-                return
+            board.pieces.remove(piece)
 
         board.pending.x = mouse_x
         board.pending.y = mouse_y
@@ -65,7 +66,7 @@ def handle(event: pygame.event):
 
 
 def render(screen: pygame.display):
-    render_board(screen, cell_size, window_padding)
+    render_board(screen)
     render_pieces(screen)
     render_choices(screen)
 

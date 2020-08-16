@@ -55,7 +55,38 @@ class Queen(Piece):
     texture_y = 1
 
     def scan_board(self):
-        pass
+        choices = full((8, 8), False)
+
+        for o in (True, False):
+            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
+                for pos in range((self.y if o else self.x) + start, end, step):
+                    x = self.x if o else pos
+                    y = pos if o else self.y
+
+                    curr_piece = get_piece(x, y)
+                    if curr_piece:
+                        if curr_piece.black:
+                            choices[x][y] = True
+                        break
+                    choices[x][y] = True
+
+        for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            for pos in range(1, 8):
+                x = self.x + pos * orientation[0]
+                y = self.y + pos * orientation[1]
+
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
+
+                curr_piece = get_piece(x, y)
+                if curr_piece is not None:
+                    if curr_piece.black:
+                        choices[x][y] = True
+                    break
+
+                choices[x][y] = True
+
+        return choices
 
 
 class Rook(Piece):
