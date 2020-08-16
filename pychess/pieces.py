@@ -1,10 +1,11 @@
-import pygame
-from os import path
 from abc import abstractmethod
+from os import path
+
+import pygame
 from numpy import full
 
-from .variables import cell_size, window_padding
 from .util import get_piece
+from .variables import cell_size, window_padding
 
 
 class Piece:
@@ -23,15 +24,15 @@ class Piece:
 
     def render(self, screen):
         screen.blit(self.texture, (
-                (self.x * cell_size) + window_padding,
-                (self.y * cell_size) + window_padding
-            ), (
-                self.texture_y * cell_size,
-                self.black * cell_size,
-                cell_size,
-                cell_size
-            )
-        )
+            (self.x * cell_size) + window_padding,
+            (self.y * cell_size) + window_padding
+        ), (
+                        self.texture_y * cell_size,
+                        self.black * cell_size,
+                        cell_size,
+                        cell_size
+                    )
+                    )
 
 
 class King(Piece):

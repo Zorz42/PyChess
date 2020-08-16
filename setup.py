@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 setup(
     name='PyChess',
     description='Chess game and AI using PyGame',

@@ -1,5 +1,6 @@
-import pygame
 from os import path
+
+import pygame
 from numpy import full
 
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
