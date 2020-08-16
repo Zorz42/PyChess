@@ -1,9 +1,10 @@
-from numpy import full
-from abc import abstractmethod
-from .variables import cell_size, window_padding, board
-
 import os
+from abc import abstractmethod
+
 import pygame
+from numpy import full
+
+from .variables import cell_size, window_padding
 
 
 class Piece:
