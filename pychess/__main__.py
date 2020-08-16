@@ -1,5 +1,5 @@
 import pygame
-from pychess import init, handle, render
+from . import init, handle, render
 
 
 def main():
