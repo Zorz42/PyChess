@@ -3,10 +3,14 @@ from .pieces import board
 
 
 def is_occupied(x: int, y: int):
+    return get_piece(x, y) is not None
+
+
+def get_piece(x: int, y: int):
     for piece in board:
         if piece.x == x and piece.y == y:
-            return True
-    return False
+            return piece
+    return None
 
 
 def render_board(screen: pygame.display, cell_size: int, window_padding: int):
@@ -25,6 +29,7 @@ def render_board(screen: pygame.display, cell_size: int, window_padding: int):
                     cell_size,
                 )
             )
+
 
 def render_pieces(screen: pygame.display):
     for piece in board:
