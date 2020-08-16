@@ -6,6 +6,7 @@ from .util import get_piece
 
 green_dot_radius = int(cell_size / 4.5)
 green_dot_color = (11, 218, 81)
+green_dot_color_hover = (8, 163, 61)
 
 
 def render_board(screen: pygame.display):
@@ -29,13 +30,18 @@ def render_pieces(screen: pygame.display):
 
 
 def render_choices(screen: pygame.display):
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse_x = int((mouse_x - window_padding) / cell_size)
+    mouse_y = int((mouse_y - window_padding) / cell_size)
     for x in range(8):
         for y in range(8):
+            color = green_dot_color_hover if x == mouse_x and y == mouse_y else green_dot_color
+
             if board.choices[x][y]:
                 x_pos = int(x * cell_size + window_padding + cell_size / 2)
                 y_pos = int(y * cell_size + window_padding + cell_size / 2)
-                gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
-                gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
+                gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, color)
+                gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, color)
 
 
 hover_surface = pygame.Surface((cell_size, cell_size), pygame.SRCALPHA)
@@ -49,7 +55,7 @@ def render_hover(screen: pygame.display):
         mouse_y = int((mouse_y - window_padding) / cell_size)
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece and not piece.black or board.choices[mouse_x][mouse_y]:
+        if piece and not piece.black:
             if mouse_x < 8 and mouse_y < 8:
                 screen.blit(hover_surface, (
                     mouse_x * cell_size + window_padding,
