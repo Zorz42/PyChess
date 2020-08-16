@@ -1,6 +1,7 @@
 import pygame
 from numpy import full
 
+from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices
 from .util import is_occupied, get_piece
 from .variables import cell_size, window_padding, board
@@ -13,16 +14,21 @@ def init():
     window_size = cell_size * 8 + window_padding * 2
     screen = pygame.display.set_mode((window_size, window_size))
 
-    # Test: Create piece
-    from .pieces import King, Queen, Rook, Bishop, Pawn, Knight
-    board.pieces.append(Rook(0, 7, False))
-    board.pieces.append(Knight(1, 7, False))
-    board.pieces.append(Bishop(2, 7, False))
-    board.pieces.append(Queen(3, 7, False))
-    board.pieces.append(King(4, 7, False))
-    board.pieces.append(Bishop(5, 7, False))
-    board.pieces.append(Knight(6, 7, False))
-    board.pieces.append(Rook(7, 7, False))
+    for color in ('black', 'white'):
+        is_black = True if color == 'black' else False
+        for pawn_x in range(8):
+            pawn_y = 1 if color == 'black' else 6
+            board.pieces.append((Pawn(pawn_x, pawn_y, is_black)))
+
+        other_y = 0 if color == 'black' else 7
+        board.pieces.append(Rook(0, other_y, is_black))
+        board.pieces.append(Knight(1, other_y, is_black))
+        board.pieces.append(Bishop(2, other_y, is_black))
+        board.pieces.append(Queen(3, other_y, is_black))
+        board.pieces.append(King(4, other_y, is_black))
+        board.pieces.append(Bishop(5, other_y, is_black))
+        board.pieces.append(Knight(6, other_y, is_black))
+        board.pieces.append(Rook(7, other_y, is_black))
 
     return screen
 
