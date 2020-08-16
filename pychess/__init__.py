@@ -46,8 +46,8 @@ def render_bool_board(screen: pygame.display):
                     radius = 15
                     x_pos = int((x + 1) * cell_size + window_padding - cell_size / 2)
                     y_pos = int((y + 1) * cell_size + window_padding - cell_size / 2)
-                    gfxdraw.aacircle(screen, x, y, radius, color)
-                    gfxdraw.filled_circle(screen, x, y, radius, color)
+                    gfxdraw.aacircle(screen, x_pos, y_pos, radius, color)
+                    gfxdraw.filled_circle(screen, x_pos, y_pos, radius, color)
 
 
 def render(screen: pygame.display):
