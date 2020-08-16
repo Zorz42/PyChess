@@ -4,7 +4,7 @@ import pygame
 from numpy import full
 
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
-from .renderers import render_board, render_pieces, render_choices
+from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece
 from .variables import cell_size, window_padding, board
 
@@ -69,5 +69,6 @@ def render(screen: pygame.display):
     render_board(screen)
     render_pieces(screen)
     render_choices(screen)
+    render_hover(screen)
 
     pygame.display.flip()
