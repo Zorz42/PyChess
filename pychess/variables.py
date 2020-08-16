@@ -2,7 +2,7 @@ from numpy import full
 
 
 class Board:
-    choices = full([], False)
+    choices = full((0, 0), False)
     pieces = []
 
 

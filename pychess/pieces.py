@@ -1,7 +1,7 @@
 import os
+import pygame
 from abc import abstractmethod
 
-import pygame
 from numpy import full
 
 from .variables import cell_size, window_padding
@@ -49,7 +49,7 @@ class King(Piece):
                 if 0 <= abs_x <= 8 and 0 <= abs_y <= 8:
                     choices[abs_x][abs_y] = True
                 choices[self.x][self.y] = False
-            return choices
+        return choices
 
 
 class Queen(Piece):

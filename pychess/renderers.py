@@ -31,7 +31,8 @@ def render_pieces(screen: pygame.display):
 
 
 def render_choices(screen: pygame.display):
-    if board.choices.size != 1:
+    count = 0
+    if board.choices.size:
         for x in range(8):
             for y in range(8):
                 if board.choices[x][y]:

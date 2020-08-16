@@ -1,13 +1,9 @@
 import pygame
-from pygame import gfxdraw
 from numpy import full
 
 from .renderers import render_board, render_pieces, render_choices
 from .util import is_occupied, get_piece
 from .variables import cell_size, window_padding, board
-
-green_dot_radius = int(cell_size / 4.5)
-green_dot_color = (11, 218, 81)
 
 
 def init():
@@ -34,17 +30,6 @@ def handle(event: pygame.event):
 
         piece = get_piece(mouse_x, mouse_y)
         board.choices = full((0, 0), False) if piece is None else piece.scan_board()
-
-
-def render_bool_board(screen: pygame.display):
-    if board.size:
-        for x in range(8):
-            for y in range(8):
-                if board[x][y]:
-                    x_pos = int(x * cell_size + window_padding + cell_size / 2)
-                    y_pos = int(y * cell_size + window_padding + cell_size / 2)
-                    gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
-                    gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
 
 
 def render(screen: pygame.display):
