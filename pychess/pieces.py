@@ -7,6 +7,7 @@ from numpy import full
 from .variables import cell_size, window_padding
 from .util import get_piece
 
+
 class Piece:
     texture = pygame.image.load(os.path.dirname(__file__) + '/resources/pieces.png')
 
@@ -99,7 +100,7 @@ class Knight(Piece):
             x = self.x + target[0]
             y = self.y + target[1]
 
-            if x < 0 or x > 7 or y < 0 or y > 7:
+            if x > 0 or x < 7 or y < 0 or y > 7:
                 continue
 
             curr_piece = get_piece(x, y)
@@ -113,4 +114,15 @@ class Pawn(Piece):
     texture_y = 5
 
     def scan_board(self):
-        pass
+        choices = full((8, 8), False)
+        for y in range(2 if self.y == 6 else 1):
+            if get_piece(self.x, self.y - y - 1) is not None:
+                break
+            choices[self.x][self.y - y - 1] = True
+
+        for x in (-1, 1):
+            piece = get_piece(self.x + x, self.y - 1)
+            if piece is not None and piece.black:
+                choices[self.x + x][self.y - 1] = True
+
+        return choices
