@@ -37,12 +37,16 @@ def handle(event: pygame.event):
         if not board.choices[mouse_x][mouse_y]:
             return
 
+        if piece:
+            board.pieces.remove(piece)
+
         board.pending.x = mouse_x
         board.pending.y = mouse_y
 
         board.pending = None
         board.choices = full((8, 8), False)
 
+        # TODO: Check winner
         # TODO: Run AI
 
 
