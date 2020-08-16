@@ -1,5 +1,7 @@
 import pygame
 
+board = []
+
 
 def init():
     pass
