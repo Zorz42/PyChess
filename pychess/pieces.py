@@ -1,5 +1,7 @@
 from abc import abstractmethod
 
+board = []
+
 
 class Piece:
     def __init__(self, x: int, y: int):

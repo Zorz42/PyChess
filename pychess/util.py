@@ -1,4 +1,4 @@
-from pychess import board
+from pychess.pieces import board
 
 
 def is_occupied(x: int, y: int):

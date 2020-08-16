@@ -1,6 +1,5 @@
 import pygame
-
-board = []
+from pychess.util import is_occupied
 
 
 def init():
