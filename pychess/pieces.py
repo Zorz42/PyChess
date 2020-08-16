@@ -161,6 +161,9 @@ class Pawn(Piece):
 
     def scan_board(self):
         choices = full((8, 8), False)
+        if not self.y:
+            return choices
+
         for y in range(2 if self.y == 6 else 1):
             if get_piece(self.x, self.y - y - 1):
                 break
