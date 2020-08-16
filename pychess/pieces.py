@@ -5,7 +5,7 @@ from abc import abstractmethod
 from numpy import full
 
 from .variables import cell_size, window_padding
-
+from .util import get_piece
 
 class Piece:
     texture = pygame.image.load(os.path.dirname(__file__) + '/resources/pieces.png')
@@ -47,8 +47,9 @@ class King(Piece):
                 abs_x = self.x + x - 1
                 abs_y = self.y + y - 1
                 if 0 <= abs_x <= 8 and 0 <= abs_y <= 8:
-                    choices[abs_x][abs_y] = True
-                choices[self.x][self.y] = False
+                    curr_piece = get_piece(abs_x, abs_y)
+                    choices[abs_x][abs_y] = curr_piece is None or curr_piece.black
+        choices[self.x][self.y] = False
         return choices
 
 
@@ -59,7 +60,28 @@ class Queen(Piece):
         pass
 
 
-class Rooks(Piece):
+class Rook(Piece):
+    texture_y = 0
+
+    def scan_board(self):
+        pass
+
+
+class Bishop(Piece):
+    texture_y = 0
+
+    def scan_board(self):
+        pass
+
+
+class Knight(Piece):
+    texture_y = 0
+
+    def scan_board(self):
+        pass
+
+
+class Pawn(Piece):
     texture_y = 0
 
     def scan_board(self):
