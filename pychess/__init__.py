@@ -14,10 +14,15 @@ def init():
     screen = pygame.display.set_mode((window_size, window_size))
 
     # Test: Create piece
-    from .pieces import King
-    board.pieces.append(King(0, 0, False))
-    board.pieces.append(King(3, 2, True))
-    board.pieces.append(King(0, 5, False))
+    from .pieces import King, Queen, Rook, Bishop, Pawn, Knight
+    board.pieces.append(Rook(0, 7, False))
+    board.pieces.append(Knight(1, 7, False))
+    board.pieces.append(Bishop(2, 7, False))
+    board.pieces.append(Queen(3, 7, False))
+    board.pieces.append(King(4, 7, False))
+    board.pieces.append(Bishop(5, 7, False))
+    board.pieces.append(Knight(6, 7, False))
+    board.pieces.append(Rook(7, 7, False))
 
     return screen
 

@@ -46,7 +46,7 @@ class King(Piece):
             for y in range(3):
                 abs_x = self.x + x - 1
                 abs_y = self.y + y - 1
-                if 0 <= abs_x <= 8 and 0 <= abs_y <= 8:
+                if 0 <= abs_x < 8 and 0 <= abs_y < 8:
                     curr_piece = get_piece(abs_x, abs_y)
                     choices[abs_x][abs_y] = curr_piece is None or curr_piece.black
         choices[self.x][self.y] = False
@@ -54,35 +54,35 @@ class King(Piece):
 
 
 class Queen(Piece):
-    texture_y = 0
+    texture_y = 1
 
     def scan_board(self):
         pass
 
 
 class Rook(Piece):
-    texture_y = 0
+    texture_y = 4
 
     def scan_board(self):
         pass
 
 
 class Bishop(Piece):
-    texture_y = 0
+    texture_y = 2
 
     def scan_board(self):
         pass
 
 
 class Knight(Piece):
-    texture_y = 0
+    texture_y = 3
 
     def scan_board(self):
         pass
 
 
 class Pawn(Piece):
-    texture_y = 0
+    texture_y = 5
 
     def scan_board(self):
         pass
