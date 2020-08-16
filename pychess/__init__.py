@@ -22,7 +22,7 @@ def init():
 
         other_y = 0 if color == 'black' else 7
         board.pieces.append(Rook(0, other_y, is_black))
-        board.pieces.append(Knight(1, other_y, is_black))
+        #board.pieces.append(Knight(1, other_y, is_black))
         board.pieces.append(Bishop(2, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))

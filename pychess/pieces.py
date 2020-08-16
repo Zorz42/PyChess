@@ -66,37 +66,19 @@ class Rook(Piece):
     def scan_board(self):
         choices = full((8, 8), False)
 
-        for y in range(self.y - 1, -1, -1):
-            curr_piece = get_piece(self.x, y)
-            if curr_piece is not None:
-                if curr_piece.black:
-                    choices[self.x][y] = True
-                break
-            choices[self.x][y] = True
+        for o in (True, False):
+            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
+                for pos in range((self.y if o else self.x) + start, end, step):
+                    x = self.x if o else pos
+                    y = pos if o else self.y
 
-        for y in range(self.y + 1, 8, 1):
-            curr_piece = get_piece(self.x, y)
-            if curr_piece is not None:
-                if curr_piece.black:
-                    choices[self.x][y] = True
-                break
-            choices[self.x][y] = True
+                    curr_piece = get_piece(x, y)
+                    if curr_piece is not None:
+                        if curr_piece.black:
+                            choices[x][y] = True
+                        break
+                    choices[x][y] = True
 
-        for x in range(self.x - 1, -1, -1):
-            curr_piece = get_piece(x, self.y)
-            if curr_piece is not None:
-                if curr_piece.black:
-                    choices[x][self.y] = True
-                break
-            choices[x][self.y] = True
-
-        for x in range(self.x + 1, 8, 1):
-            curr_piece = get_piece(x, self.y)
-            if curr_piece is not None:
-                if curr_piece.black:
-                    choices[x][self.y] = True
-                break
-            choices[x][self.y] = True
         return choices
 
 
