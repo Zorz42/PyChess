@@ -1,7 +1,10 @@
 import pygame
+from . import init, handle, render
 
 
 def main():
+    init()
+
     pygame.init()
     pygame.display.set_caption('PyChess')
 
@@ -12,10 +15,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            else:
+                handle(event)
 
-        screen.fill((255, 255, 255))
-        pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
-        pygame.display.flip()
+        render(screen)
 
     pygame.quit()
 
