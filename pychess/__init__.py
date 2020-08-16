@@ -1,24 +1,14 @@
-import os
-
 import pygame
+from os import path
 from numpy import full
 
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices
-from .util import is_occupied, get_piece
+from .util import get_piece
 from .variables import cell_size, window_padding, board
 
 
-def init():
-    icon = pygame.image.load(os.path.dirname(__file__) + '/resources/icon.png')
-
-    pygame.init()
-    pygame.display.set_caption('PyChess')
-    pygame.display.set_icon(icon)
-
-    window_size = cell_size * 8 + window_padding * 2
-    screen = pygame.display.set_mode((window_size, window_size))
-
+def place_pieces():
     for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
@@ -30,6 +20,19 @@ def init():
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
 
+
+def init():
+    icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
+
+    pygame.init()
+    pygame.display.set_caption('PyChess')
+    pygame.display.set_icon(icon)
+
+    window_size = cell_size * 8 + window_padding * 2
+    screen = pygame.display.set_mode((window_size, window_size))
+
+    place_pieces()
+
     return screen
 
 
@@ -40,25 +43,23 @@ def handle(event: pygame.event):
         mouse_y = int((mouse_y - window_padding) / cell_size)
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece is not None and not piece.black:
+        if piece and not piece.black:
             board.pending = piece
             board.choices = piece.scan_board()
             return
 
-        if not board.choices[mouse_x][mouse_y]:
-            return
+        if board.choices[mouse_x][mouse_y]:
+            if piece:
+                board.pieces.remove(piece)
 
-        if piece:
-            board.pieces.remove(piece)
+            board.pending.x = mouse_x
+            board.pending.y = mouse_y
 
-        board.pending.x = mouse_x
-        board.pending.y = mouse_y
+            board.pending = None
+            board.choices = full((8, 8), False)
 
-        board.pending = None
-        board.choices = full((8, 8), False)
-
-        # TODO: Check winner
-        # TODO: Run AI
+            # TODO: Check winner
+            # TODO: Run AI
 
 
 def render(screen: pygame.display):

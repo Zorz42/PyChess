@@ -1,7 +1,6 @@
-import os
 import pygame
+from os import path
 from abc import abstractmethod
-
 from numpy import full
 
 from .variables import cell_size, window_padding
@@ -9,7 +8,7 @@ from .util import get_piece
 
 
 class Piece:
-    texture = pygame.image.load(os.path.dirname(__file__) + '/resources/pieces.png')
+    texture = pygame.image.load(path.dirname(__file__) + '/resources/pieces.png')
 
     texture_y = None
 
@@ -23,13 +22,10 @@ class Piece:
         pass
 
     def render(self, screen):
-        screen.blit(
-            self.texture,
-            (
+        screen.blit(self.texture, (
                 (self.x * cell_size) + window_padding,
                 (self.y * cell_size) + window_padding
-            ),
-            (
+            ), (
                 self.texture_y * cell_size,
                 self.black * cell_size,
                 cell_size,
@@ -49,7 +45,7 @@ class King(Piece):
                 abs_y = self.y + y - 1
                 if 0 <= abs_x < 8 and 0 <= abs_y < 8:
                     curr_piece = get_piece(abs_x, abs_y)
-                    choices[abs_x][abs_y] = curr_piece is None or curr_piece.black
+                    choices[abs_x][abs_y] = not curr_piece or curr_piece.black
         choices[self.x][self.y] = False
         return choices
 
@@ -74,7 +70,7 @@ class Rook(Piece):
                     y = pos if o else self.y
 
                     curr_piece = get_piece(x, y)
-                    if curr_piece is not None:
+                    if curr_piece:
                         if curr_piece.black:
                             choices[x][y] = True
                         break
@@ -104,7 +100,7 @@ class Knight(Piece):
                 continue
 
             curr_piece = get_piece(x, y)
-            if curr_piece is None or curr_piece.black:
+            if not curr_piece or curr_piece.black:
                 choices[x][y] = True
 
         return choices
@@ -116,13 +112,13 @@ class Pawn(Piece):
     def scan_board(self):
         choices = full((8, 8), False)
         for y in range(2 if self.y == 6 else 1):
-            if get_piece(self.x, self.y - y - 1) is not None:
+            if get_piece(self.x, self.y - y - 1):
                 break
             choices[self.x][self.y - y - 1] = True
 
         for x in (-1, 1):
             piece = get_piece(self.x + x, self.y - 1)
-            if piece is not None and piece.black:
+            if piece and piece.black:
                 choices[self.x + x][self.y - 1] = True
 
         return choices
