@@ -21,18 +21,14 @@ def init():
 
     for is_black in (True, False):
         for pawn_x in range(8):
-            pawn_y = 1 if is_black else 6
-            board.pieces.append((Pawn(pawn_x, pawn_y, is_black)))
+            board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
 
         other_y = 0 if is_black else 7
-        board.pieces.append(Rook(0, other_y, is_black))
-        board.pieces.append(Knight(1, other_y, is_black))
-        board.pieces.append(Bishop(2, other_y, is_black))
+        for i, piece in enumerate((Rook, Knight, Bishop)):
+            board.pieces.append(piece(i, other_y, is_black))
+            board.pieces.append(piece(7 - i, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
-        board.pieces.append(Bishop(5, other_y, is_black))
-        board.pieces.append(Knight(6, other_y, is_black))
-        board.pieces.append(Rook(7, other_y, is_black))
 
     return screen
 
