@@ -1,3 +1,4 @@
+from numpy import full
 from abc import abstractmethod
 
 board = []
@@ -22,9 +23,14 @@ class King(Piece):
         super().__init__(x, y)
 
     def scan_board(self):
-        pass
+        bool_board = full((8, 8), False)
+        for x in range(3):
+            for y in range(3):
+                abs_x = self.x + x
+                abs_y = self.y + y
+                if 0 <= abs_x <= 8 and 0 <= abs_y <= 8:
+                    bool_board[abs_x][abs_y] = True
+        return bool_board
 
     def render(self):
         pass
-
-# scan_board(): return full((8, 8), False)
