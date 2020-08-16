@@ -1,4 +1,5 @@
 import pygame
+from pygame import gfxdraw
 from numpy import full
 from .util import is_occupied, render_board, render_pieces, get_piece
 from .variables import cell_size, window_padding
@@ -41,10 +42,12 @@ def render_bool_board(screen: pygame.display):
         for x in range(8):
             for y in range(8):
                 if bool_board[x][y]:
-                    pygame.draw.circle(screen, (0, 255, 0), (
-                        (x + 1) * cell_size + window_padding - cell_size / 2,
-                        (y + 1) * cell_size + window_padding - cell_size / 2
-                    ), 15)
+                    color = (0, 255, 0)
+                    radius = 15
+                    x_pos = int((x + 1) * cell_size + window_padding - cell_size / 2)
+                    y_pos = int((y + 1) * cell_size + window_padding - cell_size / 2)
+                    gfxdraw.aacircle(screen, x, y, radius, color)
+                    gfxdraw.filled_circle(screen, x, y, radius, color)
 
 
 def render(screen: pygame.display):
