@@ -3,12 +3,7 @@ from pychess import init, handle, render
 
 
 def main():
-    init()
-
-    pygame.init()
-    pygame.display.set_caption('PyChess')
-
-    screen = pygame.display.set_mode((444, 444))
+    screen = init()
     running = True
 
     while running:
