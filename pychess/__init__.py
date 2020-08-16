@@ -42,7 +42,7 @@ def render_bool_board(screen: pygame.display):
         for x in range(8):
             for y in range(8):
                 if bool_board[x][y]:
-                    color = (0, 255, 0)
+                    color = (11, 218, 81)
                     radius = 15
                     x_pos = int((x + 1) * cell_size + window_padding - cell_size / 2)
                     y_pos = int((y + 1) * cell_size + window_padding - cell_size / 2)
