@@ -1,8 +1,8 @@
 import pygame
 from pychess.util import is_occupied, render_board
 
-cell_size = 48
-window_padding = 30
+cell_size = 64
+window_padding = 40
 
 window_size = cell_size * 8 + window_padding * 2
 
