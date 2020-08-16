@@ -4,9 +4,11 @@ import pygame
 def init():
     pass
 
+
 def handle(event):
     # Handle event(s)
     pass
+
 
 def render(screen):
     # Render to screen?
