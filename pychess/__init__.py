@@ -6,6 +6,9 @@ from .variables import cell_size, window_padding
 
 bool_board = full([], False)
 
+green_dot_radius = int(cell_size / 4.5)
+green_dot_color = (11, 218, 81)
+
 
 def init():
     pygame.init()
@@ -42,12 +45,10 @@ def render_bool_board(screen: pygame.display):
         for x in range(8):
             for y in range(8):
                 if bool_board[x][y]:
-                    color = (11, 218, 81)
-                    radius = 15
-                    x_pos = int((x + 1) * cell_size + window_padding - cell_size / 2)
-                    y_pos = int((y + 1) * cell_size + window_padding - cell_size / 2)
-                    gfxdraw.aacircle(screen, x_pos, y_pos, radius, color)
-                    gfxdraw.filled_circle(screen, x_pos, y_pos, radius, color)
+                    x_pos = int(x * cell_size + window_padding + cell_size / 2)
+                    y_pos = int(y * cell_size + window_padding + cell_size / 2)
+                    gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
+                    gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, green_dot_color)
 
 
 def render(screen: pygame.display):
