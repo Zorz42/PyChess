@@ -99,7 +99,6 @@ class Bishop(Piece):
                         choices[x][y] = True
                     break
 
-                print(x, y)
                 choices[x][y] = True
 
         return choices
