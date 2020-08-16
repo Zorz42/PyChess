@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from numpy import full
 
@@ -8,8 +10,11 @@ from .variables import cell_size, window_padding, board
 
 
 def init():
+    icon = pygame.image.load(os.path.dirname(__file__) + '/resources/icon.png')
+
     pygame.init()
     pygame.display.set_caption('PyChess')
+    pygame.display.set_icon(icon)
 
     window_size = cell_size * 8 + window_padding * 2
     screen = pygame.display.set_mode((window_size, window_size))
