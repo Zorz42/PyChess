@@ -2,8 +2,9 @@ from numpy import full
 
 
 class Board:
-    choices = full((0, 0), False)
+    choices = full((8, 8), False)
     pieces = []
+    pending = None
 
 
 board = Board()

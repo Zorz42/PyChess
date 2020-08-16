@@ -29,7 +29,16 @@ def handle(event: pygame.event):
         mouse_y = int((mouse_y - window_padding) / cell_size)
 
         piece = get_piece(mouse_x, mouse_y)
-        board.choices = full((0, 0), False) if piece is None else piece.scan_board()
+        if piece is not None and not piece.black:
+            board.pending = piece
+            board.choices = piece.scan_board()
+            return
+
+        if not board.choices[mouse_x][mouse_y]:
+            return
+
+        print('Handle new position')
+        board.choices = full((8, 8), False)
 
 
 def render(screen: pygame.display):
