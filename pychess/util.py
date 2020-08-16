@@ -1,3 +1,4 @@
+import pygame
 from pychess.pieces import board
 
 
@@ -6,3 +7,21 @@ def is_occupied(x: int, y: int):
         if piece.x == x and piece.y == y:
             return True
     return False
+
+
+def render_board(screen: pygame.display, cell_size: int, window_padding: int):
+    screen.fill((10, 10, 10))
+
+    for x in range(8):
+        for y in range(8):
+            color = (200, 200, 200) if (x + y) % 2 else (130, 130, 130)
+            pygame.draw.rect(
+                screen,
+                color,
+                (
+                    x * cell_size + window_padding,
+                    y * cell_size + window_padding,
+                    cell_size,
+                    cell_size,
+                )
+            )
