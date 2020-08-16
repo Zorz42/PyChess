@@ -64,7 +64,40 @@ class Rook(Piece):
     texture_y = 4
 
     def scan_board(self):
-        pass
+        choices = full((8, 8), False)
+
+        for y in range(self.y - 1, -1, -1):
+            curr_piece = get_piece(self.x, y)
+            if curr_piece is not None:
+                if curr_piece.black:
+                    choices[self.x][y] = True
+                break
+            choices[self.x][y] = True
+
+        for y in range(self.y + 1, 8, 1):
+            curr_piece = get_piece(self.x, y)
+            if curr_piece is not None:
+                if curr_piece.black:
+                    choices[self.x][y] = True
+                break
+            choices[self.x][y] = True
+
+        for x in range(self.x - 1, -1, -1):
+            curr_piece = get_piece(x, self.y)
+            if curr_piece is not None:
+                if curr_piece.black:
+                    choices[x][self.y] = True
+                break
+            choices[x][self.y] = True
+
+        for x in range(self.x + 1, 8, 1):
+            curr_piece = get_piece(x, self.y)
+            if curr_piece is not None:
+                if curr_piece.black:
+                    choices[x][self.y] = True
+                break
+            choices[x][self.y] = True
+        return choices
 
 
 class Bishop(Piece):
