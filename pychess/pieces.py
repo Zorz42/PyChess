@@ -206,12 +206,12 @@ class Pawn(Piece):
 
         direction = 1 if self.black else -1
 
-        for y in range(2 if (self.y == (2 if self.black else 6)) else 1):
-            if self.x < 0 or self.x > 7 or self.y - y + direction < 0 or self.y - y + direction > 7:
+        for y in range(2 if (self.y == (1 if self.black else 6)) else 1):
+            if self.x < 0 or self.x > 7 or self.y + y * direction + direction < 0 or self.y + y * direction + direction > 7:
                 continue
-            if get_piece(self.x, self.y - y + direction):
+            if get_piece(self.x, self.y + y * direction + direction):
                 break
-            choices[self.x][self.y - y + direction] = True
+            choices[self.x][self.y + y * direction + direction] = True
 
         for x in (-1, 1):
             if x < 0 or x > 7 or self.y + direction < 0 or self.y + direction > 7:
