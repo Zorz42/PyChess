@@ -19,6 +19,9 @@ class Piece:
         self.y = y
         self.black = black
 
+    def can_move(self):
+        return not (~self.scan_board()).all()
+
     @abstractmethod
     def scan_board(self):
         pass
@@ -51,9 +54,6 @@ class King(Piece):
             board.black_king = self
         else:
             board.white_king = self
-
-    def can_move(self):
-        return not (~self.scan_board()).all()
 
     def in_danger(self):
         for other in board.pieces:
