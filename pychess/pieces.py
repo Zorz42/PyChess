@@ -24,7 +24,7 @@ class Piece:
         return not (self.black and is_check(board.black_king)) and not (not self.black and is_check(board.white_king))
 
     @abstractmethod
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         pass
 
     @property
@@ -66,13 +66,13 @@ class King(Piece):
                 if isinstance(other, Pawn):
                     danger |= other.get_attacks()
                 else:
-                    danger |= other.scan_board(ignore_king=True)
+                    danger |= other.scan_board(ignore_king=True, force_move=True)
         return danger
 
     def can_move(self):
         return not (~self.scan_board()).all()
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         danger = self.get_danger(ignore_king)
         choices = full((8, 8), False)
         for x in range(3):
@@ -98,10 +98,10 @@ class Queen(Piece):
     texture_y = 1
     _weight = 9
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         choices = full((8, 8), False)
 
-        if not self.can_move():
+        if force_move or not self.can_move():
             return choices
 
         for o in (True, False):
@@ -149,10 +149,10 @@ class Rook(Piece):
     texture_y = 4
     _weight = 5
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         choices = full((8, 8), False)
 
-        if not self.can_move():
+        if force_move or not self.can_move():
             return choices
 
         for o in (True, False):
@@ -180,10 +180,10 @@ class Bishop(Piece):
     texture_y = 2
     _weight = 3
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         choices = full((8, 8), False)
 
-        if not self.can_move():
+        if force_move or not self.can_move():
             return choices
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -213,10 +213,10 @@ class Knight(Piece):
     texture_y = 3
     _weight = 3
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         choices = full((8, 8), False)
 
-        if not self.can_move():
+        if force_move or not self.can_move():
             return choices
 
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
@@ -240,12 +240,12 @@ class Pawn(Piece):
     texture_y = 5
     _weight = 1
 
-    def scan_board(self, ignore_king=False):
+    def scan_board(self, ignore_king=False, force_move=False):
         choices = full((8, 8), False)
         if not 0 < self.y < 7:
             return choices
 
-        if not self.can_move():
+        if force_move or not self.can_move():
             return choices
 
         direction = 1 if self.black else -1
