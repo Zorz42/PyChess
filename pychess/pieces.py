@@ -41,9 +41,10 @@ class King(Piece):
     def scan_board(self, ignore_king=False):
         danger = full((8, 8), False)
         for other in board.pieces:
-            # TODO: This will not check other king
-            # TODO: Pawns will not work
-            if other != self and not isinstance(other, King) and ((self.black and not other.black) or (not self.black and other.black)):
+            if ignore_king:
+                break
+
+            if other != self and ((self.black and not other.black) or (not self.black and other.black)):
                 if isinstance(other, Pawn):
                     danger |= other.get_attacks()
                 else:
