@@ -21,14 +21,12 @@ def is_checkmate(king):
 
 
 def is_stalemate(black):
-    king = board.black_king if black else board.white_king
 
-    check = is_check(king)
     stale = True
-
     for piece in board.pieces:
-        if (black and piece.black) or (not black and not piece.black):
-            continue
-        stale &= is_stale(piece)
+        if black != piece.black:
+            if not is_stale(piece):
+                stale = False
+                break
 
-    return not check and stale
+    return not is_check(board.black_king if black else board.white_king) and stale
