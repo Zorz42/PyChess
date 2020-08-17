@@ -214,7 +214,7 @@ class Pawn(Piece):
                 choices[self.x][abs_y] = True
 
         for x in (-1, 1):
-            if not 0 <= self.y + direction < 8:
+            if not 0 < self.y < 7:
                 continue
             piece = get_piece(self.x + x, self.y + direction)
             if piece and self.black != piece.black:
