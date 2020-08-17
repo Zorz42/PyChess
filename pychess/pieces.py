@@ -19,6 +19,9 @@ class Piece:
         self.y = y
         self.black = black
 
+    def can_move(self):
+        return True
+
     @abstractmethod
     def scan_board(self, ignore_king=False):
         pass
