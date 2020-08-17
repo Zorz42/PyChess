@@ -12,6 +12,7 @@ class Piece:
     texture = pygame.image.load(path.dirname(__file__) + '/resources/pieces.png')
 
     texture_y = None
+    weight = None
 
     def __init__(self, x: int, y: int, black: bool):
         self.x = x
@@ -37,6 +38,7 @@ class Piece:
 
 class King(Piece):
     texture_y = 0
+    weight = 90
 
     def scan_board(self, ignore_king=False):
         danger = full((8, 8), False)
@@ -44,7 +46,7 @@ class King(Piece):
             if ignore_king:
                 break
 
-            if other != self and ((self.black and not other.black) or (not self.black and other.black)):
+            if other != self and self.black != other.black:
                 if isinstance(other, Pawn):
                     danger |= other.get_attacks()
                 else:
@@ -72,6 +74,7 @@ class King(Piece):
 
 class Queen(Piece):
     texture_y = 1
+    weight = 9
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
@@ -119,6 +122,7 @@ class Queen(Piece):
 
 class Rook(Piece):
     texture_y = 4
+    weight = 5
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
@@ -146,6 +150,7 @@ class Rook(Piece):
 
 class Bishop(Piece):
     texture_y = 2
+    weight = 3
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
@@ -175,6 +180,7 @@ class Bishop(Piece):
 
 class Knight(Piece):
     texture_y = 3
+    weight = 3
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
@@ -198,6 +204,7 @@ class Knight(Piece):
 
 class Pawn(Piece):
     texture_y = 5
+    weight = 1
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
@@ -214,8 +221,6 @@ class Pawn(Piece):
                 choices[self.x][abs_y] = True
 
         for x in (-1, 1):
-            if not 0 < self.y < 7:
-                continue
             piece = get_piece(self.x + x, self.y + direction)
             if piece and self.black != piece.black:
                 choices[self.x + x][self.y + direction] = True
