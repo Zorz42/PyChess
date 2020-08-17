@@ -8,6 +8,14 @@ def get_piece(x: int, y: int):
     return None
 
 
+def move(old: tuple, new: tuple):
+    piece = get_piece(old[0], old[1])
+    if piece:
+        piece.x = new[0]
+        piece.y = new[1]
+    return piece
+
+
 def is_check(king):
     return king.in_danger()
 
