@@ -5,7 +5,7 @@ from numpy import full
 
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece
+from .util import get_piece, is_checkmate, is_stalemate
 from .variables import cell_size, window_padding, board
 
 
@@ -21,6 +21,24 @@ def place_pieces():
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
 
+
+def display_end_messages():
+    if is_checkmate(board.white_king):
+        # TODO: Display some message
+        print('Player lost')
+        return True
+
+    if is_checkmate(board.black_king):
+        # TODO: Display some message
+        print('Player won')
+        return True
+
+    if is_stalemate(black=True) or is_stalemate(black=False):
+        # TODO: Display some message
+        print('Game draw')
+        return True
+
+    return False
 
 def init():
     icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
@@ -67,8 +85,15 @@ def handle(event: pygame.event):
         board.pending = None
         board.choices = full((8, 8), False)
 
-        # TODO: Check winner
+        has_ended = display_end_messages()
+        if has_ended:
+            return True
+
         # TODO: Run AI
+
+        has_ended = display_end_messages()
+        if has_ended:
+            return True
 
 
 def render(screen: pygame.display):

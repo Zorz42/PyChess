@@ -19,13 +19,23 @@ def is_check(king):
     return king.get_danger()[king.x][king.y]
 
 
-def is_stale(king):
-    return not king.can_move()
+def is_stale(piece):
+    return not piece.can_move()
 
 
 def is_checkmate(king):
     return is_check(king) and is_stale(king)
 
 
-def is_stalemate(king):
-    return not is_check(king) and is_stale(king)
+def is_stalemate(black):
+    king = board.black_king if black else board.white_king
+
+    check = is_check(king)
+    stale = True
+
+    for piece in board.pieces:
+        if (black and piece.black) or (not black and not piece.black):
+            continue
+        stale &= is_stale(piece)
+
+    return not check and stale

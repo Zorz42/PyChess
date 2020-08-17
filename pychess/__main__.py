@@ -12,7 +12,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             else:
-                handle(event)
+                running = not handle(event)
         render(screen)
     pygame.quit()
 
