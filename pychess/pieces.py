@@ -23,6 +23,10 @@ class Piece:
     def scan_board(self, ignore_king=False):
         pass
 
+    @property
+    def weight(self):
+        return -self._weight if self.black else self._weight
+
     def render(self, screen):
         screen.blit(self.texture, (
             (self.x * cell_size) + window_padding,
@@ -39,10 +43,6 @@ class Piece:
 class King(Piece):
     texture_y = 0
     _weight = 90
-
-    @property
-    def weight(self):
-        return -self._weight if self.black else self._weight
 
     def scan_board(self, ignore_king=False):
         danger = full((8, 8), False)
