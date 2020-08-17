@@ -20,7 +20,7 @@ def is_check(king):
 
 
 def is_stale(king):
-    return (~king.scan_board()).all()
+    return not king.can_move()
 
 
 def is_checkmate(king):
