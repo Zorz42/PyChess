@@ -70,7 +70,7 @@ class King(Piece):
         return danger
 
     def can_move(self):
-        return (~self.scan_board()).all()
+        return not (~self.scan_board()).all()
 
     def scan_board(self, ignore_king=False):
         danger = self.get_danger(ignore_king)
