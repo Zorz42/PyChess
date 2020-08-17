@@ -5,7 +5,6 @@ import pygame
 from numpy import full
 
 from .util import get_piece
-from .util import is_check
 from .variables import cell_size, window_padding, board
 
 
@@ -20,11 +19,8 @@ class Piece:
         self.y = y
         self.black = black
 
-    def can_move(self):
-        return not (self.black and is_check(board.black_king)) and not (not self.black and is_check(board.white_king))
-
     @abstractmethod
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         pass
 
     @property
@@ -56,24 +52,23 @@ class King(Piece):
         else:
             board.white_king = self
 
-    def get_danger(self, ignore_king=False):
-        danger = full((8, 8), False)
-        for other in board.pieces:
-            if ignore_king:
-                break
-
-            if other != self and self.black != other.black:
-                if isinstance(other, Pawn):
-                    danger |= other.get_attacks()
-                else:
-                    danger |= other.scan_board(ignore_king=True, force_move=True)
-        return danger
-
     def can_move(self):
         return not (~self.scan_board()).all()
 
-    def scan_board(self, ignore_king=False, force_move=False):
-        danger = self.get_danger(ignore_king)
+    def in_danger(self):
+        for other in board.pieces:
+            if other != self and self.black != other.black:
+                if isinstance(other, Pawn):
+                    danger = other.get_attacks()
+                elif isinstance(other, King):
+                    danger = other.scan_board(ignore_king=True)
+                else:
+                    danger = other.scan_board()
+                if danger[self.x][self.y]:
+                    return True
+        return False
+
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
         for x in range(3):
             for y in range(3):
@@ -81,16 +76,24 @@ class King(Piece):
                 abs_y = self.y + y - 1
                 if 0 <= abs_x < 8 and 0 <= abs_y < 8:
                     curr_piece = get_piece(abs_x, abs_y)
-
-                    if self.black:
-                        choices[abs_x][abs_y] = not curr_piece or not curr_piece.black
-                    else:
-                        choices[abs_x][abs_y] = not curr_piece or curr_piece.black
-
-                    if danger[abs_x][abs_y]:
-                        choices[abs_x][abs_y] = False
+                    choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
 
         choices[self.x][self.y] = False
+        prev_x, prev_y = self.x, self.y
+        if not ignore_king:
+            for x in range(8):
+                for y in range(8):
+                    if choices[x][y]:
+                        self.x, self.y = x, y
+                        piece = get_piece(x, y)
+                        if piece:
+                            board.pieces.remove(piece)
+                        if self.in_danger():
+                            choices[x][y] = False
+                        if piece:
+                            board.pieces.append(piece)
+        self.x, self.y = prev_x, prev_y
+
         return choices
 
 
@@ -98,11 +101,8 @@ class Queen(Piece):
     texture_y = 1
     _weight = 9
 
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         choices = full((8, 8), False)
-
-        if force_move or not self.can_move():
-            return choices
 
         for o in (True, False):
             for start, end, step in ((-1, -1, -1), (1, 8, 1)):
@@ -116,9 +116,7 @@ class Queen(Piece):
                             choices[x][y] = True
                         elif self.black and not curr_piece.black:
                             choices[x][y] = True
-
-                        if not (ignore_king and isinstance(curr_piece, King)):
-                            break
+                        break
 
                     choices[x][y] = True
 
@@ -136,9 +134,7 @@ class Queen(Piece):
                         choices[x][y] = True
                     elif self.black and not curr_piece.black:
                         choices[x][y] = True
-
-                    if not (ignore_king and isinstance(curr_piece, King)):
-                        break
+                    break
 
                 choices[x][y] = True
 
@@ -149,11 +145,8 @@ class Rook(Piece):
     texture_y = 4
     _weight = 5
 
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         choices = full((8, 8), False)
-
-        if force_move or not self.can_move():
-            return choices
 
         for o in (True, False):
             for start, end, step in ((-1, -1, -1), (1, 8, 1)):
@@ -167,9 +160,7 @@ class Rook(Piece):
                             choices[x][y] = True
                         elif self.black and not curr_piece.black:
                             choices[x][y] = True
-
-                        if not (ignore_king and isinstance(curr_piece, King)):
-                            break
+                        break
 
                     choices[x][y] = True
 
@@ -180,11 +171,8 @@ class Bishop(Piece):
     texture_y = 2
     _weight = 3
 
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         choices = full((8, 8), False)
-
-        if force_move or not self.can_move():
-            return choices
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
             for pos in range(1, 8):
@@ -200,9 +188,7 @@ class Bishop(Piece):
                         choices[x][y] = True
                     elif self.black and not curr_piece.black:
                         choices[x][y] = True
-
-                    if not (ignore_king and isinstance(curr_piece, King)):
-                        break
+                    break
 
                 choices[x][y] = True
 
@@ -213,11 +199,8 @@ class Knight(Piece):
     texture_y = 3
     _weight = 3
 
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         choices = full((8, 8), False)
-
-        if force_move or not self.can_move():
-            return choices
 
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
             x = self.x + target[0]
@@ -240,12 +223,9 @@ class Pawn(Piece):
     texture_y = 5
     _weight = 1
 
-    def scan_board(self, ignore_king=False, force_move=False):
+    def scan_board(self):
         choices = full((8, 8), False)
         if not 0 < self.y < 7:
-            return choices
-
-        if force_move or not self.can_move():
             return choices
 
         direction = 1 if self.black else -1
