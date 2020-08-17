@@ -87,13 +87,15 @@ def handle(event: pygame.event):
 
         has_ended = display_end_messages()
         if has_ended:
-            return True
+            board.active = False
+            return
 
         # TODO: Run AI
 
         has_ended = display_end_messages()
         if has_ended:
-            return True
+            board.active = False
+            return
 
 
 def render(screen: pygame.display):

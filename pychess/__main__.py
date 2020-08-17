@@ -1,6 +1,6 @@
 import pygame
 
-from . import init, handle, render
+from . import init, handle, render, board
 
 
 def main():
@@ -11,8 +11,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            else:
-                running = not handle(event)
+            elif board.active:
+                handle(event)
         render(screen)
     pygame.quit()
 

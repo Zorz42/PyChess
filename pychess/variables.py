@@ -2,6 +2,8 @@ from numpy import full
 
 
 class Board:
+    active = True
+
     choices = full((8, 8), False)
     pieces = []
     pending = None
