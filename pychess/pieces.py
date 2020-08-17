@@ -5,7 +5,7 @@ import pygame
 from numpy import full
 
 from .util import get_piece
-from .variables import cell_size, window_padding
+from .variables import cell_size, window_padding, board
 
 
 class Piece:
@@ -19,7 +19,7 @@ class Piece:
         self.black = black
 
     @abstractmethod
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         pass
 
     def render(self, screen):
@@ -38,7 +38,17 @@ class Piece:
 class King(Piece):
     texture_y = 0
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
+        danger = full((8, 8), False)
+        for other in board.pieces:
+            # TODO: This will not check other king
+            # TODO: Pawns will not work
+            if other != self and not isinstance(other, King) and ((self.black and not other.black) or (not self.black and other.black)):
+                if isinstance(other, Pawn):
+                    danger |= other.get_attacks()
+                else:
+                    danger |= other.scan_board(ignore_king=True)
+
         choices = full((8, 8), False)
         for x in range(3):
             for y in range(3):
@@ -46,7 +56,15 @@ class King(Piece):
                 abs_y = self.y + y - 1
                 if 0 <= abs_x < 8 and 0 <= abs_y < 8:
                     curr_piece = get_piece(abs_x, abs_y)
-                    choices[abs_x][abs_y] = not curr_piece or curr_piece.black
+
+                    if self.black:
+                        choices[abs_x][abs_y] = not curr_piece or not curr_piece.black
+                    else:
+                        choices[abs_x][abs_y] = not curr_piece or curr_piece.black
+
+                    if danger[abs_x][abs_y]:
+                        choices[abs_x][abs_y] = False
+
         choices[self.x][self.y] = False
         return choices
 
@@ -54,7 +72,7 @@ class King(Piece):
 class Queen(Piece):
     texture_y = 1
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for o in (True, False):
@@ -65,9 +83,14 @@ class Queen(Piece):
 
                     curr_piece = get_piece(x, y)
                     if curr_piece:
-                        if curr_piece.black:
+                        if not self.black and curr_piece.black:
                             choices[x][y] = True
-                        break
+                        elif self.black and not curr_piece.black:
+                            choices[x][y] = True
+
+                        if not (ignore_king and isinstance(curr_piece, King)):
+                            break
+
                     choices[x][y] = True
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -80,9 +103,13 @@ class Queen(Piece):
 
                 curr_piece = get_piece(x, y)
                 if curr_piece is not None:
-                    if curr_piece.black:
+                    if not self.black and curr_piece.black:
                         choices[x][y] = True
-                    break
+                    elif self.black and not curr_piece.black:
+                        choices[x][y] = True
+
+                    if not (ignore_king and isinstance(curr_piece, King)):
+                        break
 
                 choices[x][y] = True
 
@@ -92,7 +119,7 @@ class Queen(Piece):
 class Rook(Piece):
     texture_y = 4
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for o in (True, False):
@@ -103,9 +130,14 @@ class Rook(Piece):
 
                     curr_piece = get_piece(x, y)
                     if curr_piece:
-                        if curr_piece.black:
+                        if not self.black and curr_piece.black:
                             choices[x][y] = True
-                        break
+                        elif self.black and not curr_piece.black:
+                            choices[x][y] = True
+
+                        if not (ignore_king and isinstance(curr_piece, King)):
+                            break
+
                     choices[x][y] = True
 
         return choices
@@ -114,7 +146,7 @@ class Rook(Piece):
 class Bishop(Piece):
     texture_y = 2
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -127,9 +159,13 @@ class Bishop(Piece):
 
                 curr_piece = get_piece(x, y)
                 if curr_piece is not None:
-                    if curr_piece.black:
+                    if not self.black and curr_piece.black:
                         choices[x][y] = True
-                    break
+                    elif self.black and not curr_piece.black:
+                        choices[x][y] = True
+
+                    if not (ignore_king and isinstance(curr_piece, King)):
+                        break
 
                 choices[x][y] = True
 
@@ -139,7 +175,7 @@ class Bishop(Piece):
 class Knight(Piece):
     texture_y = 3
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
@@ -150,8 +186,11 @@ class Knight(Piece):
                 continue
 
             curr_piece = get_piece(x, y)
-            if not curr_piece or curr_piece.black:
-                choices[x][y] = True
+
+            if self.black:
+                choices[x][y] = not curr_piece or not curr_piece.black
+            else:
+                choices[x][y] = not curr_piece or curr_piece.black
 
         return choices
 
@@ -159,19 +198,37 @@ class Knight(Piece):
 class Pawn(Piece):
     texture_y = 5
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
-        if not self.y:
+        if not self.y or self.y > 7:
             return choices
 
+        direction = 1 if self.black else -1
+
         for y in range(2 if self.y == 6 else 1):
-            if get_piece(self.x, self.y - y - 1):
+            if self.x < 0 or self.x > 7 or self.y - y + direction < 0 or self.y - y + direction > 7:
+                continue
+            if get_piece(self.x, self.y - y + direction):
                 break
-            choices[self.x][self.y - y - 1] = True
+            choices[self.x][self.y - y + direction] = True
 
         for x in (-1, 1):
-            piece = get_piece(self.x + x, self.y - 1)
-            if piece and piece.black:
-                choices[self.x + x][self.y - 1] = True
+            if x < 0 or x > 7 or self.y + direction < 0 or self.y + direction > 7:
+                continue
+            piece = get_piece(self.x + x, self.y + direction)
+            if piece and ((not self.black and piece.black) or (self.black and not piece.black)):
+                choices[self.x + x][self.y + direction] = True
+
+        return choices
+
+    def get_attacks(self):
+        choices = full((8, 8), False)
+        direction = 1 if self.black else -1
+
+        if self.x - 1 < 0 or self.x + 1 > 7 or self.y + direction < 0 or self.y + direction > 7:
+            return choices
+
+        choices[self.x + 1][self.y + direction] = True
+        choices[self.x - 1][self.y + direction] = True
 
         return choices
