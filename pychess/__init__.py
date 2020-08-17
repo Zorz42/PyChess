@@ -5,7 +5,7 @@ from numpy import full
 
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece
+from .get_piece import get_piece
 from .variables import cell_size, window_padding, board
 
 

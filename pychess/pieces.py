@@ -4,7 +4,7 @@ from os import path
 import pygame
 from numpy import full
 
-from .util import get_piece
+from .get_piece import get_piece
 from .variables import cell_size, window_padding, board
 
 
