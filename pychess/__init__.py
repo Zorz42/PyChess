@@ -3,6 +3,7 @@ from os import path
 import pygame
 from numpy import full
 
+from .algorithm import play
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, is_checkmate, is_stalemate
@@ -90,7 +91,7 @@ def handle(event: pygame.event):
             board.active = False
             return
 
-        # TODO: Run AI
+        play()
 
         has_ended = display_end_messages()
         if has_ended:

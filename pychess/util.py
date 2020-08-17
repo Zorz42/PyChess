@@ -8,13 +8,6 @@ def get_piece(x: int, y: int):
     return None
 
 
-def get_board_weight():
-    result = 0
-    for piece in board.pieces:
-        result += piece.weight
-    return result
-
-
 def is_check(king):
     # TODO: This!
     return False
