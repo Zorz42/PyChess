@@ -16,8 +16,7 @@ def get_board_weight():
 
 
 def is_check(king):
-    # TODO: This!
-    return False
+    return king.in_danger()
 
 
 def is_stale(piece):
