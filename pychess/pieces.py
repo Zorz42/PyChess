@@ -44,6 +44,14 @@ class King(Piece):
     texture_y = 0
     _weight = 90
 
+    def __init__(self, x: int, y: int, black: bool):
+        super().__init__(x, y, black)
+
+        if self.black:
+            board.black_king = self
+        else:
+            board.white_king = self
+
     def get_danger(self, ignore_king=False):
         danger = full((8, 8), False)
         for other in board.pieces:
