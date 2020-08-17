@@ -13,3 +13,20 @@ def get_board_weight():
     for piece in board.pieces:
         result += piece.weight
     return result
+
+
+def is_check(king):
+    # Get all positions where king would be in danger (king.get_danger())
+    # If danger[king_x][king_y] is true, king is in check
+    return False
+
+
+def is_stalemate(king):
+    # Get all positions where king can move
+    # If everything is false, it is stalemate
+    # Pro tip: Numpy probably has something to quickly check if whole 2d array is false
+    return False
+
+
+def is_checkmate(king):
+    return is_check(king) and is_stalemate(king)
