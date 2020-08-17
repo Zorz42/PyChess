@@ -21,7 +21,7 @@ def is_check(king):
     return False
 
 
-def is_stalemate(king):
+def is_stale(king):
     # Get all positions where king can move
     # If everything is false, it is stalemate
     # Pro tip: Numpy probably has something to quickly check if whole 2d array is false
@@ -29,4 +29,8 @@ def is_stalemate(king):
 
 
 def is_checkmate(king):
-    return is_check(king) and is_stalemate(king)
+    return is_check(king) and is_stale(king)
+
+
+def is_stalemate(king):
+    return not is_check(king) and is_stale(king)
