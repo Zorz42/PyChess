@@ -5,6 +5,7 @@ import pygame
 from numpy import full
 
 from .get_piece import get_piece
+from .util import is_check
 from .variables import cell_size, window_padding, board
 
 
@@ -20,6 +21,10 @@ class Piece:
         self.black = black
 
     def can_move(self):
+        if self.black and is_check(board.black_king):
+            return False
+        if not self.black and is_check(board.white_king):
+            return False
         return True
 
     @abstractmethod
@@ -68,6 +73,9 @@ class King(Piece):
                     danger |= other.scan_board(ignore_king=True)
         return danger
 
+    def can_move(self):
+        return True
+
     def scan_board(self, ignore_king=False):
         danger = self.get_danger(ignore_king)
         choices = full((8, 8), False)
@@ -96,6 +104,9 @@ class Queen(Piece):
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
+
+        if not self.can_move():
+            return choices
 
         for o in (True, False):
             for start, end, step in ((-1, -1, -1), (1, 8, 1)):
@@ -145,6 +156,9 @@ class Rook(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
+        if not self.can_move():
+            return choices
+
         for o in (True, False):
             for start, end, step in ((-1, -1, -1), (1, 8, 1)):
                 for pos in range((self.y if o else self.x) + start, end, step):
@@ -172,6 +186,9 @@ class Bishop(Piece):
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
+
+        if not self.can_move():
+            return choices
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
             for pos in range(1, 8):
@@ -203,6 +220,9 @@ class Knight(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
+        if not self.can_move():
+            return choices
+
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
             x = self.x + target[0]
             y = self.y + target[1]
@@ -227,6 +247,9 @@ class Pawn(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
         if not 0 < self.y < 7:
+            return choices
+
+        if not self.can_move():
             return choices
 
         direction = 1 if self.black else -1
