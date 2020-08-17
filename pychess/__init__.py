@@ -41,6 +41,7 @@ def display_end_messages():
 
     return False
 
+
 def init():
     icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
 

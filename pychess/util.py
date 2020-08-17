@@ -9,8 +9,7 @@ def get_piece(x: int, y: int):
 
 
 def is_check(king):
-    # TODO: This!
-    return False
+    return king.in_danger()
 
 
 def is_stale(piece):

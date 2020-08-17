@@ -22,6 +22,23 @@ class Piece:
     def can_move(self):
         return not (~self.scan_board()).all()
 
+    def protect_king(self, choices):
+        king = board.black_king if self.black else board.white_king
+
+        prev_x, prev_y = self.x, self.y
+        for x in range(8):
+            for y in range(8):
+                if choices[x][y]:
+                    piece = get_piece(x, y)
+                    self.x, self.y = x, y
+                    if piece:
+                        board.pieces.remove(piece)
+                    if king.in_danger():
+                        choices[x][y] = False
+                    if piece:
+                        board.pieces.append(piece)
+        self.x, self.y = prev_x, prev_y
+
     @abstractmethod
     def scan_board(self):
         pass
@@ -60,10 +77,8 @@ class King(Piece):
             if other != self and self.black != other.black:
                 if isinstance(other, Pawn):
                     danger = other.get_attacks()
-                elif isinstance(other, King):
-                    danger = other.scan_board(ignore_king=True)
                 else:
-                    danger = other.scan_board()
+                    danger = other.scan_board(ignore_king=True)
                 if danger[self.x][self.y]:
                     return True
         return False
@@ -79,20 +94,9 @@ class King(Piece):
                     choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
 
         choices[self.x][self.y] = False
-        prev_x, prev_y = self.x, self.y
+
         if not ignore_king:
-            for x in range(8):
-                for y in range(8):
-                    if choices[x][y]:
-                        self.x, self.y = x, y
-                        piece = get_piece(x, y)
-                        if piece:
-                            board.pieces.remove(piece)
-                        if self.in_danger():
-                            choices[x][y] = False
-                        if piece:
-                            board.pieces.append(piece)
-        self.x, self.y = prev_x, prev_y
+            self.protect_king(choices)
 
         return choices
 
@@ -101,7 +105,7 @@ class Queen(Piece):
     texture_y = 1
     _weight = 9
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for o in (True, False):
@@ -137,6 +141,9 @@ class Queen(Piece):
                     break
 
                 choices[x][y] = True
+
+        if not ignore_king:
+            self.protect_king(choices)
 
         return choices
 
@@ -145,7 +152,7 @@ class Rook(Piece):
     texture_y = 4
     _weight = 5
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for o in (True, False):
@@ -164,6 +171,9 @@ class Rook(Piece):
 
                     choices[x][y] = True
 
+        if not ignore_king:
+            self.protect_king(choices)
+
         return choices
 
 
@@ -171,7 +181,7 @@ class Bishop(Piece):
     texture_y = 2
     _weight = 3
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -192,6 +202,9 @@ class Bishop(Piece):
 
                 choices[x][y] = True
 
+        if not ignore_king:
+            self.protect_king(choices)
+
         return choices
 
 
@@ -199,7 +212,7 @@ class Knight(Piece):
     texture_y = 3
     _weight = 3
 
-    def scan_board(self):
+    def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
@@ -215,6 +228,9 @@ class Knight(Piece):
                 choices[x][y] = not curr_piece or not curr_piece.black
             else:
                 choices[x][y] = not curr_piece or curr_piece.black
+
+        if not ignore_king:
+            self.protect_king(choices)
 
         return choices
 
@@ -241,6 +257,8 @@ class Pawn(Piece):
             piece = get_piece(self.x + x, self.y + direction)
             if piece and self.black != piece.black:
                 choices[self.x + x][self.y + direction] = True
+
+        self.protect_king(choices)
 
         return choices
 
