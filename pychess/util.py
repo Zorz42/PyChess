@@ -16,7 +16,8 @@ def get_board_weight():
 
 
 def is_check(king):
-    return king.get_danger()[king.x][king.y]
+    # TODO: This!
+    return False
 
 
 def is_stale(king):
