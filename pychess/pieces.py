@@ -4,7 +4,7 @@ from os import path
 import pygame
 from numpy import full
 
-from .get_piece import get_piece
+from .util import get_piece
 from .util import is_check
 from .variables import cell_size, window_padding, board
 
@@ -21,11 +21,7 @@ class Piece:
         self.black = black
 
     def can_move(self):
-        if self.black and is_check(board.black_king):
-            return False
-        if not self.black and is_check(board.white_king):
-            return False
-        return True
+        return not (self.black and is_check(board.black_king)) and not (not self.black and is_check(board.white_king))
 
     @abstractmethod
     def scan_board(self, ignore_king=False):

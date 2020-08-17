@@ -2,7 +2,7 @@ import pygame
 from pygame import gfxdraw
 
 from .variables import cell_size, window_padding, board
-from .get_piece import get_piece
+from .util import get_piece
 
 green_dot_radius = int(cell_size / 4.5)
 green_dot_color = (11, 218, 81)
