@@ -205,7 +205,7 @@ class Pawn(Piece):
 
         direction = 1 if self.black else -1
 
-        for y in range(2 if self.y == 6 else 1):
+        for y in range(2 if (self.y == (2 if self.black else 6)) else 1):
             if self.x < 0 or self.x > 7 or self.y - y + direction < 0 or self.y - y + direction > 7:
                 continue
             if get_piece(self.x, self.y - y + direction):
