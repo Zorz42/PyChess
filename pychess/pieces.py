@@ -44,7 +44,7 @@ class King(Piece):
     texture_y = 0
     _weight = 90
 
-    def scan_board(self, ignore_king=False):
+    def get_danger(self, ignore_king=False):
         danger = full((8, 8), False)
         for other in board.pieces:
             if ignore_king:
@@ -55,7 +55,10 @@ class King(Piece):
                     danger |= other.get_attacks()
                 else:
                     danger |= other.scan_board(ignore_king=True)
+        return danger
 
+    def scan_board(self, ignore_king=False):
+        danger = self.get_danger(ignore_king)
         choices = full((8, 8), False)
         for x in range(3):
             for y in range(3):
