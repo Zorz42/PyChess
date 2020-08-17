@@ -40,11 +40,17 @@ def init():
 def handle(event: pygame.event):
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x < window_padding or mouse_y < window_padding:
+            return
+
         mouse_x = int((mouse_x - window_padding) / cell_size)
         mouse_y = int((mouse_y - window_padding) / cell_size)
 
+        if mouse_x > 7 or mouse_y > 7:
+            return
+
         piece = get_piece(mouse_x, mouse_y)
-        if piece: # and not piece.black:
+        if piece:  # and not piece.black:
             board.pending = piece
             board.choices = piece.scan_board()
             return

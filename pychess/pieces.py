@@ -201,20 +201,20 @@ class Pawn(Piece):
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
-        if not self.y or self.y > 7:
+        if not 0 < self.y < 7:
             return choices
 
         direction = 1 if self.black else -1
 
         for y in range(2 if (self.y == (1 if self.black else 6)) else 1):
-            if self.x < 0 or self.x > 7 or self.y + y * direction + direction < 0 or self.y + y * direction + direction > 7:
-                continue
-            if get_piece(self.x, self.y + y * direction + direction):
-                break
-            choices[self.x][self.y + y * direction + direction] = True
+            abs_y = self.y + y * direction + direction
+            if 0 <= abs_y < 8:
+                if get_piece(self.x, abs_y):
+                    break
+                choices[self.x][abs_y] = True
 
         for x in (-1, 1):
-            if x < 0 or x > 7 or self.y + direction < 0 or self.y + direction > 7:
+            if not 0 <= self.y + direction < 8:
                 continue
             piece = get_piece(self.x + x, self.y + direction)
             if piece and ((not self.black and piece.black) or (self.black and not piece.black)):
@@ -224,12 +224,10 @@ class Pawn(Piece):
 
     def get_attacks(self):
         choices = full((8, 8), False)
-        direction = 1 if self.black else -1
 
-        if self.x - 1 < 0 or self.x + 1 > 7 or self.y + direction < 0 or self.y + direction > 7:
-            return choices
-
-        choices[self.x + 1][self.y + direction] = True
-        choices[self.x - 1][self.y + direction] = True
+        if not self.x < 1 and not self.x > 6:
+            direction = 1 if self.black else -1
+            choices[self.x + 1][self.y + direction] = True
+            choices[self.x - 1][self.y + direction] = True
 
         return choices
