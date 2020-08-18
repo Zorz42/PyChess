@@ -11,11 +11,11 @@ def evaluate():
     return result
 
 
-def get_all_moves():
+def get_all_moves(ignore_king=True):
     result = []
     for piece in reversed(board.pieces):
         if piece.black:
-            piece.update_board(ignore_king=True)
+            piece.update_board(ignore_king)
             moves = piece.scan_board()
             for x, y in argwhere(moves):
                 result.append(((piece.x, piece.y), (x, y)))
@@ -23,12 +23,12 @@ def get_all_moves():
 
 
 def play():
-    new_game_moves = get_all_moves()
+    new_game_moves = get_all_moves(ignore_king=False)
     best_move = -inf
     best_move_found = None
     for new_game_move in new_game_moves:
         move(*new_game_move)
-        value = minimax(2, -inf, inf, True)
+        value = minimax(3, -inf, inf, True)
         undo()
         if value >= best_move:
             best_move = value
