@@ -4,7 +4,7 @@ from os import path
 import pygame
 from numpy import full, argwhere, ndindex
 
-from .util import get_piece
+from .util import get_piece, move, undo
 from .variables import cell_size, window_padding, board
 
 
@@ -25,17 +25,11 @@ class Piece:
     def protect_king(self, choices):
         king = board.black_king if self.black else board.white_king
 
-        prev_x, prev_y = self.x, self.y
         for x, y in argwhere(choices):
-            piece = get_piece(x, y)
-            self.x, self.y = x, y
-            if piece:
-                board.pieces.remove(piece)
+            move((self.x, self.y), (x, y))
             if king.in_danger():
                 choices[x][y] = False
-            if piece:
-                board.pieces.append(piece)
-        self.x, self.y = prev_x, prev_y
+            undo()
 
     @abstractmethod
     def scan_board(self):
@@ -103,9 +97,10 @@ class Queen(Piece):
         choices = full((8, 8), False)
 
         for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
+            x, y = self.x, self.y
             for pos in range(1, 8):
-                x = self.x + pos * orientation[0]
-                y = self.y + pos * orientation[1]
+                x += orientation[0]
+                y += orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
                     break

@@ -95,7 +95,10 @@ def handle(event: pygame.event):
             board.active = False
             return
 
+        from time import time
+        start = time()
         play()
+        print(time() - start)
 
         has_ended = display_end_messages()
         if has_ended:
