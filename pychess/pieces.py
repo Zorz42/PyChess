@@ -2,7 +2,7 @@ from abc import abstractmethod
 from os import path
 
 import pygame
-from numpy import full
+from numpy import full, argwhere, ndindex
 
 from .util import get_piece
 from .variables import cell_size, window_padding, board
@@ -26,17 +26,15 @@ class Piece:
         king = board.black_king if self.black else board.white_king
 
         prev_x, prev_y = self.x, self.y
-        for x in range(8):
-            for y in range(8):
-                if choices[x][y]:
-                    piece = get_piece(x, y)
-                    self.x, self.y = x, y
-                    if piece:
-                        board.pieces.remove(piece)
-                    if king.in_danger():
-                        choices[x][y] = False
-                    if piece:
-                        board.pieces.append(piece)
+        for x, y in argwhere(choices):
+            piece = get_piece(x, y)
+            self.x, self.y = x, y
+            if piece:
+                board.pieces.remove(piece)
+            if king.in_danger():
+                choices[x][y] = False
+            if piece:
+                board.pieces.append(piece)
         self.x, self.y = prev_x, prev_y
 
     @abstractmethod
@@ -75,23 +73,19 @@ class King(Piece):
     def in_danger(self):
         for other in board.pieces:
             if other != self and self.black != other.black:
-                if isinstance(other, Pawn):
-                    danger = other.get_attacks()
-                else:
-                    danger = other.scan_board(ignore_king=True)
+                danger = other.get_attacks() if isinstance(other, Pawn) else other.scan_board(ignore_king=True)
                 if danger[self.x][self.y]:
                     return True
         return False
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
-        for x in range(3):
-            for y in range(3):
-                abs_x = self.x + x - 1
-                abs_y = self.y + y - 1
-                if 0 <= abs_x < 8 and 0 <= abs_y < 8:
-                    curr_piece = get_piece(abs_x, abs_y)
-                    choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
+        for x, y in ndindex((3, 3)):
+            abs_x = self.x + x - 1
+            abs_y = self.y + y - 1
+            if 0 <= abs_x < 8 and 0 <= abs_y < 8:
+                curr_piece = get_piece(abs_x, abs_y)
+                choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
 
         choices[self.x][self.y] = False
 
@@ -108,35 +102,17 @@ class Queen(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
-        for o in (True, False):
-            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
-                for pos in range((self.y if o else self.x) + start, end, step):
-                    x = self.x if o else pos
-                    y = pos if o else self.y
-
-                    curr_piece = get_piece(x, y)
-                    if curr_piece:
-                        if not self.black and curr_piece.black:
-                            choices[x][y] = True
-                        elif self.black and not curr_piece.black:
-                            choices[x][y] = True
-                        break
-
-                    choices[x][y] = True
-
-        for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+        for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             for pos in range(1, 8):
                 x = self.x + pos * orientation[0]
                 y = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
-                    continue
+                    break
 
                 curr_piece = get_piece(x, y)
-                if curr_piece is not None:
-                    if not self.black and curr_piece.black:
-                        choices[x][y] = True
-                    elif self.black and not curr_piece.black:
+                if curr_piece:
+                    if self.black != curr_piece.black:
                         choices[x][y] = True
                     break
 
@@ -155,21 +131,21 @@ class Rook(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
-        for o in (True, False):
-            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
-                for pos in range((self.y if o else self.x) + start, end, step):
-                    x = self.x if o else pos
-                    y = pos if o else self.y
+        for orientation in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+            for pos in range(1, 8):
+                x = self.x + pos * orientation[0]
+                y = self.y + pos * orientation[1]
 
-                    curr_piece = get_piece(x, y)
-                    if curr_piece:
-                        if not self.black and curr_piece.black:
-                            choices[x][y] = True
-                        elif self.black and not curr_piece.black:
-                            choices[x][y] = True
-                        break
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    break
 
-                    choices[x][y] = True
+                curr_piece = get_piece(x, y)
+                if curr_piece:
+                    if self.black != curr_piece.black:
+                        choices[x][y] = True
+                    break
+
+                choices[x][y] = True
 
         if not ignore_king:
             self.protect_king(choices)
@@ -190,13 +166,11 @@ class Bishop(Piece):
                 y = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
-                    continue
+                    break
 
                 curr_piece = get_piece(x, y)
-                if curr_piece is not None:
-                    if not self.black and curr_piece.black:
-                        choices[x][y] = True
-                    elif self.black and not curr_piece.black:
+                if curr_piece:
+                    if self.black != curr_piece.black:
                         choices[x][y] = True
                     break
 
@@ -223,11 +197,7 @@ class Knight(Piece):
                 continue
 
             curr_piece = get_piece(x, y)
-
-            if self.black:
-                choices[x][y] = not curr_piece or not curr_piece.black
-            else:
-                choices[x][y] = not curr_piece or curr_piece.black
+            choices[x][y] = not curr_piece or self.black != curr_piece.black
 
         if not ignore_king:
             self.protect_king(choices)
@@ -265,8 +235,8 @@ class Pawn(Piece):
     def get_attacks(self):
         choices = full((8, 8), False)
 
-        if not self.x < 1 and not self.x > 6:
-            direction = 1 if self.black else -1
+        direction = 1 if self.black else -1
+        if 0 < self.x < 7 and 0 <= self.y + direction < 8:
             choices[self.x + 1][self.y + direction] = True
             choices[self.x - 1][self.y + direction] = True
 
