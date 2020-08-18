@@ -6,7 +6,7 @@ from numpy import full
 from .algorithm import play
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece, is_checkmate, is_stalemate
+from .util import get_piece, is_checkmate, is_stalemate, update_pieces
 from .variables import cell_size, window_padding, board
 
 
@@ -21,6 +21,8 @@ def place_pieces():
             board.pieces.append(piece(7 - i, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
+
+    update_pieces()
 
 
 def display_end_messages():
@@ -57,7 +59,17 @@ def init():
     return screen
 
 
-def handle(event: pygame.event):
+def render(screen: pygame.display):
+    render_board(screen)
+    render_pieces(screen)
+    render_choices(screen)
+    render_hover(screen)
+
+    pygame.display.flip()
+
+
+def handle(screen: pygame.display, event: pygame.event):
+    update_pieces()
     if not board.active:
         return
 
@@ -95,6 +107,8 @@ def handle(event: pygame.event):
             board.active = False
             return
 
+        render(screen)
+
         from time import time
         start = time()
         play()
@@ -104,12 +118,3 @@ def handle(event: pygame.event):
         if has_ended:
             board.active = False
             return
-
-
-def render(screen: pygame.display):
-    render_board(screen)
-    render_pieces(screen)
-    render_choices(screen)
-    render_hover(screen)
-
-    pygame.display.flip()

@@ -1,6 +1,6 @@
 from numpy import argwhere, inf
 
-from .util import move, undo
+from .util import move, undo, update_pieces
 from .variables import board
 
 
@@ -12,6 +12,7 @@ def evaluate():
 
 
 def play():
+    update_pieces()
     best_score = -inf
     best_move = None
 
