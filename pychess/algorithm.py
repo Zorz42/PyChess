@@ -22,7 +22,7 @@ def play():
                 current_move = (piece.x, piece.y), (x, y)
                 move(*current_move)
 
-                current_score = minimax(1, -inf, inf, True)
+                current_score = minimax(2, -inf, inf, True)
                 undo()
 
                 if current_score > best_score:
@@ -33,7 +33,7 @@ def play():
         move(*best_move, store_move=False)
 
 
-def minimax(depth, alpha, beta, maximising=True):
+def minimax(depth, alpha, beta, maximising):
     if not depth:
         return -evaluate()
 
@@ -44,8 +44,14 @@ def minimax(depth, alpha, beta, maximising=True):
             for x, y in argwhere(moves):
                 move((piece.x, piece.y), (x, y))
                 if maximising:
-                    best_score = max(minimax(depth - 1, 0, 0, False), best_score)
+                    best_score = max(minimax(depth - 1, alpha, beta, False), best_score)
+                    alpha = max(best_score, alpha)
                 else:
-                    best_score = min(minimax(depth - 1, 0, 0, True), best_score)
+                    best_score = min(minimax(depth - 1, alpha, beta, True), best_score)
+                    beta = min(best_score, beta)
                 undo()
+
+                if beta <= alpha:
+                    return best_score
+
     return best_score
