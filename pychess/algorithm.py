@@ -1,6 +1,6 @@
 from numpy import argwhere, inf
 
-from .util import move, undo, get_board_state, update_pieces
+from .util import move, undo, get_board_state
 from .variables import board
 
 
@@ -12,7 +12,6 @@ def evaluate():
 
 
 def play():
-    update_pieces()
     best_score = -inf
     best_move = None
 
@@ -44,7 +43,7 @@ def minimax(depth, alpha, beta, maximising, use_transposition=True):
     best_score = -inf if maximising else inf
     for piece in board.pieces:
         if piece.black == maximising:
-            piece.update_board()
+            piece.update_board(ignore_king=True)
             moves = piece.scan_board()
             for x, y in argwhere(moves):
                 move((piece.x, piece.y), (x, y))

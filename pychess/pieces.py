@@ -21,7 +21,6 @@ class Piece:
         self._saved_board = full((8, 8), False)
 
     def can_move(self):
-        self.update_board()
         return not (~self.scan_board()).all()
 
     def protect_king(self):
