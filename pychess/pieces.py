@@ -236,8 +236,10 @@ class Pawn(Piece):
         choices = full((8, 8), False)
 
         direction = 1 if self.black else -1
-        if 0 < self.x < 7 and 0 <= self.y + direction < 8:
-            choices[self.x + 1][self.y + direction] = True
-            choices[self.x - 1][self.y + direction] = True
+        if 0 <= self.y + direction < 8:
+            if self.x < 7:
+                choices[self.x + 1][self.y + direction] = True
+            if self.x > 0:
+                choices[self.x - 1][self.y + direction] = True
 
         return choices
