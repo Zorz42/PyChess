@@ -2,6 +2,8 @@ from .variables import board
 
 
 def play():
+    possible_moves = {}
+    
     # Do move:
     # Call minimax/negamax on all possible start moves?
     # Get best move

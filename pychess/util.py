@@ -9,10 +9,15 @@ def get_piece(x: int, y: int):
 
 
 def move(old: tuple, new: tuple):
+    piece_to_be_eaten = get_piece(new[0], new[1])
+    if piece_to_be_eaten:
+        board.pieces.remove(piece_to_be_eaten)
+
     piece = get_piece(old[0], old[1])
     if piece:
         piece.x = new[0]
         piece.y = new[1]
+
     return piece
 
 
