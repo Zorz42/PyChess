@@ -20,6 +20,8 @@ class Board:
     moves_stack = []
     eaten_stack = []
 
+    transposition = {}
+
 
 board = Board()
 

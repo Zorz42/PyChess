@@ -1,6 +1,6 @@
 from numpy import argwhere, inf
 
-from .util import move, undo
+from .util import move, undo, get_board_state
 from .variables import board
 
 
@@ -34,6 +34,8 @@ def play():
             best_move = value
             best_move_found = new_game_move
 
+    print(best_move, end='\t - \t')
+
     if best_move_found:
         move(*best_move_found)
 
@@ -48,8 +50,15 @@ def minimax(depth, alpha, beta, maximising):
 
     for move_ in new_game_moves:
         move(*move_)
-        best_move = max(best_move, minimax(depth - 1, alpha, beta, False)) if maximising else \
-            min(best_move, minimax(depth - 1, alpha, beta, True))
+
+        state = get_board_state()
+
+        if state in board.transposition:
+            current_score = board.transposition[state]
+        else:
+            current_score = minimax(depth - 1, alpha, beta, not maximising)
+
+        best_move = max(best_move, current_score) if maximising else min(best_move, current_score)
         undo()
         if maximising:
             alpha = max(alpha, best_move)
@@ -57,4 +66,6 @@ def minimax(depth, alpha, beta, maximising):
             beta = min(beta, best_move)
         if beta <= alpha:
             return best_move
+        board.transposition[state] = current_score
+
     return best_move
