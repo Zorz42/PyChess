@@ -24,7 +24,7 @@ def play():
                 current_move = (piece.x, piece.y), (x, y)
                 move(*current_move)
 
-                current_score = minimax(3, -inf, inf, board, True)
+                current_score = minimax(3, -inf, inf, True)
                 undo()
 
                 if current_score > best_score:
@@ -35,7 +35,7 @@ def play():
         move(*best_move, store_move=False)
 
 
-def minimax(depth, alpha, beta, board, maximising=True):
+def minimax(depth, alpha, beta, maximising=True):
     # Very good AI
     from random import randint
     return randint(-100, 100)
