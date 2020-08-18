@@ -96,7 +96,7 @@ class Queen(Piece):
     _weight = 9
 
     def update_board(self, ignore_king=False):
-        choices = full((8, 8), False)
+        self._saved_board = full((8, 8), False)
 
         for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             x, y = self.x, self.y
@@ -110,15 +110,13 @@ class Queen(Piece):
                 curr_piece = get_piece(x, y)
                 if curr_piece:
                     if self.black != curr_piece.black:
-                        choices[x][y] = True
+                        self._saved_board[x][y] = True
                     break
 
-                choices[x][y] = True
+                self._saved_board[x][y] = True
 
         if not ignore_king:
-            self.protect_king(choices)
-
-        return choices
+            self.protect_king(self._saved_board)
 
 
 class Rook(Piece):
