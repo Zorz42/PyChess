@@ -36,7 +36,7 @@ class Piece:
         return self._saved_board
 
     @abstractmethod
-    def update_board(self):
+    def update_board(self, ignore_king=False):
         pass
 
     @property
@@ -71,7 +71,11 @@ class King(Piece):
     def in_danger(self):
         for other in board.pieces:
             if other != self and self.black != other.black:
-                danger = other.get_attacks() if isinstance(other, Pawn) else other.scan_board()
+                if isinstance(other, Pawn):
+                    danger = other.get_attacks()
+                else:
+                    other.update_board(ignore_king=True)
+                    danger = other.scan_board()
                 if danger[self.x][self.y]:
                     return True
         return False
@@ -216,8 +220,6 @@ class Pawn(Piece):
             piece = get_piece(self.x + x, self.y + direction)
             if piece and self.black != piece.black:
                 self._saved_board[self.x + x][self.y + direction] = True
-
-        self.protect_king(self._saved_board)
 
     def get_attacks(self):
         choices = full((8, 8), False)
