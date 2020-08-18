@@ -105,23 +105,7 @@ class Queen(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
-        for o in (True, False):
-            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
-                for pos in range((self.y if o else self.x) + start, end, step):
-                    x = self.x if o else pos
-                    y = pos if o else self.y
-
-                    curr_piece = get_piece(x, y)
-                    if curr_piece:
-                        if not self.black and curr_piece.black:
-                            choices[x][y] = True
-                        elif self.black and not curr_piece.black:
-                            choices[x][y] = True
-                        break
-
-                    choices[x][y] = True
-
-        for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+        for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             for pos in range(1, 8):
                 x = self.x + pos * orientation[0]
                 y = self.y + pos * orientation[1]
@@ -152,21 +136,23 @@ class Rook(Piece):
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
 
-        for o in (True, False):
-            for start, end, step in ((-1, -1, -1), (1, 8, 1)):
-                for pos in range((self.y if o else self.x) + start, end, step):
-                    x = self.x if o else pos
-                    y = pos if o else self.y
+        for orientation in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+            for pos in range(1, 8):
+                x = self.x + pos * orientation[0]
+                y = self.y + pos * orientation[1]
 
-                    curr_piece = get_piece(x, y)
-                    if curr_piece:
-                        if not self.black and curr_piece.black:
-                            choices[x][y] = True
-                        elif self.black and not curr_piece.black:
-                            choices[x][y] = True
-                        break
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
 
-                    choices[x][y] = True
+                curr_piece = get_piece(x, y)
+                if curr_piece is not None:
+                    if not self.black and curr_piece.black:
+                        choices[x][y] = True
+                    elif self.black and not curr_piece.black:
+                        choices[x][y] = True
+                    break
+
+                choices[x][y] = True
 
         if not ignore_king:
             self.protect_king(choices)
