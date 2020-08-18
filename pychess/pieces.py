@@ -235,8 +235,8 @@ class Pawn(Piece):
     def get_attacks(self):
         choices = full((8, 8), False)
 
-        if not self.x < 1 and not self.x > 6:
-            direction = 1 if self.black else -1
+        direction = 1 if self.black else -1
+        if 0 < self.x < 7 and 0 <= self.y + direction < 8:
             choices[self.x + 1][self.y + direction] = True
             choices[self.x - 1][self.y + direction] = True
 
