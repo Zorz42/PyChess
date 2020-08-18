@@ -21,7 +21,6 @@ class Piece:
         self._saved_board = full((8, 8), False)
 
     def can_move(self):
-        self.update_board()
         return not (~self.scan_board()).all()
 
     def protect_king(self):
@@ -75,7 +74,6 @@ class King(Piece):
                 if isinstance(other, Pawn):
                     danger = other.get_attacks()
                 else:
-                    other.update_board(ignore_king=True)
                     danger = other.scan_board()
                 if danger[self.x][self.y]:
                     return True

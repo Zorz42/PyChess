@@ -60,8 +60,3 @@ def is_stalemate(black):
                 return False
 
     return not is_check(board.black_king if black else board.white_king)
-
-
-def update_pieces():
-    for piece in board.pieces:
-        piece.update_board()
