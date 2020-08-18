@@ -2,7 +2,7 @@ from abc import abstractmethod
 from os import path
 
 import pygame
-from numpy import full
+from numpy import full, argwhere, ndindex
 
 from .util import get_piece
 from .variables import cell_size, window_padding, board
@@ -26,17 +26,15 @@ class Piece:
         king = board.black_king if self.black else board.white_king
 
         prev_x, prev_y = self.x, self.y
-        for x in range(8):
-            for y in range(8):
-                if choices[x][y]:
-                    piece = get_piece(x, y)
-                    self.x, self.y = x, y
-                    if piece:
-                        board.pieces.remove(piece)
-                    if king.in_danger():
-                        choices[x][y] = False
-                    if piece:
-                        board.pieces.append(piece)
+        for x, y in argwhere(choices):
+            piece = get_piece(x, y)
+            self.x, self.y = x, y
+            if piece:
+                board.pieces.remove(piece)
+            if king.in_danger():
+                choices[x][y] = False
+            if piece:
+                board.pieces.append(piece)
         self.x, self.y = prev_x, prev_y
 
     @abstractmethod
@@ -85,13 +83,12 @@ class King(Piece):
 
     def scan_board(self, ignore_king=False):
         choices = full((8, 8), False)
-        for x in range(3):
-            for y in range(3):
-                abs_x = self.x + x - 1
-                abs_y = self.y + y - 1
-                if 0 <= abs_x < 8 and 0 <= abs_y < 8:
-                    curr_piece = get_piece(abs_x, abs_y)
-                    choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
+        for x, y in ndindex((3, 3)):
+            abs_x = self.x + x - 1
+            abs_y = self.y + y - 1
+            if 0 <= abs_x < 8 and 0 <= abs_y < 8:
+                curr_piece = get_piece(abs_x, abs_y)
+                choices[abs_x][abs_y] = not curr_piece or self.black != curr_piece.black
 
         choices[self.x][self.y] = False
 
