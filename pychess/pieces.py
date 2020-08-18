@@ -220,7 +220,7 @@ class Pawn(Piece):
         self.protect_king(self._saved_board)
 
     def get_attacks(self):
-        choices = full((8, 8), False)
+        choices = (full((8, 8), False))
 
         direction = 1 if self.black else -1
         if 0 <= self.y + direction < 8:

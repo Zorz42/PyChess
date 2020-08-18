@@ -1,3 +1,5 @@
+from numpy import full
+
 from .variables import board
 
 
@@ -66,3 +68,10 @@ def is_stalemate(black):
 def update_pieces():
     for piece in board.pieces:
         piece.update_board()
+
+
+def get_board_state():
+    state = full((8, 8), None)
+    for piece in board.pieces:
+        state[piece.x][piece.y] = piece.texture_y + piece.black * 10
+    return tuple(map(tuple, state))
