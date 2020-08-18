@@ -8,10 +8,14 @@ def get_piece(x: int, y: int):
     return None
 
 
-def move(old: tuple, new: tuple):
+def move(old: tuple, new: tuple, store_move=True):
     piece_to_be_eaten = get_piece(new[0], new[1])
     if piece_to_be_eaten:
         board.pieces.remove(piece_to_be_eaten)
+
+    if store_move:
+        board.moves_stack.append((old, new))
+        board.eaten_stack.append(piece_to_be_eaten)
 
     piece = get_piece(old[0], old[1])
     if piece:
@@ -20,6 +24,17 @@ def move(old: tuple, new: tuple):
 
     return piece
 
+
+def undo():
+    if len(board.moves_stack) == 0:
+        return
+
+    last_move = board.moves_stack.pop()
+    last_eaten = board.eaten_stack.pop()
+
+    move(last_move[1], last_move[0], store_move=False)
+    if last_eaten:
+        board.pieces.append(last_eaten)
 
 def is_check(king):
     return king.in_danger()

@@ -11,6 +11,9 @@ class Board:
     white_king = None
     black_king = None
 
+    moves_stack = []
+    eaten_stack = []
+
 
 board = Board()
 

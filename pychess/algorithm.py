@@ -1,6 +1,6 @@
 from numpy import argwhere, inf
 
-from .util import move
+from .util import move, undo
 from .variables import board
 
 
@@ -25,14 +25,14 @@ def play():
                 move(*current_move)
 
                 current_score = minimax(3, -inf, inf, board, True)
-                # TODO: Somehow undo move
+                undo()
 
                 if current_score > best_score:
-                    best_move = best_move
+                    best_move = current_move
                     best_score = current_score
 
     if best_move:
-        move(*best_move)
+        move(*best_move, store_move=False)
 
 
 def minimax(depth, alpha, beta, board, maximising=True):
