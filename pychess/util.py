@@ -29,12 +29,9 @@ def is_checkmate(king):
 
 
 def is_stalemate(black):
-
-    stale = True
     for piece in board.pieces:
         if black != piece.black:
             if not is_stale(piece):
-                stale = False
-                break
+                return False
 
-    return not is_check(board.black_king if black else board.white_king) and stale
+    return not is_check(board.black_king if black else board.white_king)
