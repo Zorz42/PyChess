@@ -36,6 +36,7 @@ def undo():
     if last_eaten:
         board.pieces.append(last_eaten)
 
+
 def is_check(king):
     return king.in_danger()
 
