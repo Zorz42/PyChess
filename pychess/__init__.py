@@ -58,6 +58,9 @@ def init():
 
 
 def handle(event: pygame.event):
+    if not board.active:
+        return
+
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < window_padding or mouse_y < window_padding:
