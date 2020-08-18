@@ -2,7 +2,13 @@ from numpy import full
 
 
 class Board:
-    active = True
+    class State:
+        none = 0
+        won = 1
+        lost = 2
+        draw = 3
+
+    state = State.none
 
     choices = full((8, 8), False)
     pieces = []

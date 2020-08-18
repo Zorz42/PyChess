@@ -11,7 +11,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif board.active:
+            elif board.state == board.State.none:
                 handle(screen, event)
         render(screen)
     pygame.quit()

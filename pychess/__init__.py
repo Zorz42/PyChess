@@ -22,27 +22,16 @@ def place_pieces():
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
 
-    for piece in board.pieces:
-        piece.update_board()
-
 
 def display_end_messages():
     if is_checkmate(board.white_king):
-        # TODO: Display some message
-        print('Player lost')
-        return True
+        board.state = board.State.lost
 
     if is_checkmate(board.black_king):
-        # TODO: Display some message
-        print('Player won')
-        return True
+        board.state = board.State.won
 
     if is_stalemate(black=True) or is_stalemate(black=False):
-        # TODO: Display some message
-        print('Game draw')
-        return True
-
-    return False
+        board.state = board.State.draw
 
 
 def init():
@@ -70,9 +59,6 @@ def render(screen: pygame.display):
 
 
 def handle(screen: pygame.display, event: pygame.event):
-    if not board.active:
-        return
-
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < window_padding or mouse_y < window_padding:
@@ -103,9 +89,8 @@ def handle(screen: pygame.display, event: pygame.event):
         board.pending = None
         board.choices = full((8, 8), False)
 
-        has_ended = display_end_messages()
-        if has_ended:
-            board.active = False
+        display_end_messages()
+        if board.state:
             return
 
         render(screen)
@@ -115,7 +100,4 @@ def handle(screen: pygame.display, event: pygame.event):
         play()
         print(time() - start)
 
-        has_ended = display_end_messages()
-        if has_ended:
-            board.active = False
-            return
+        display_end_messages()
