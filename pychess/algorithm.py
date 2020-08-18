@@ -23,7 +23,7 @@ def play():
                 current_move = (piece.x, piece.y), (x, y)
                 move(*current_move)
 
-                current_score = minimax(2, -inf, inf, True)
+                current_score = minimax(3, -inf, inf, True)
                 undo()
 
                 if current_score > best_score:

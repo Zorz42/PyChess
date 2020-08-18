@@ -74,6 +74,7 @@ class King(Piece):
                 if isinstance(other, Pawn):
                     danger = other.get_attacks()
                 else:
+                    other.update_board(ignore_king=True)
                     danger = other.scan_board()
                 if danger[self.x][self.y]:
                     return True
