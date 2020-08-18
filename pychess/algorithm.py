@@ -19,12 +19,10 @@ def play():
         if piece.black:
             moves = piece.scan_board()
             for x, y in argwhere(moves):
-                # print(piece, f'from {piece.x} {piece.y} can move to {x} {y}')
-
                 current_move = (piece.x, piece.y), (x, y)
                 move(*current_move)
 
-                current_score = minimax(3, -inf, inf, True)
+                current_score = minimax(1, -inf, inf, True)
                 undo()
 
                 if current_score > best_score:
@@ -36,6 +34,18 @@ def play():
 
 
 def minimax(depth, alpha, beta, maximising=True):
-    # Very good AI
-    from random import randint
-    return randint(-100, 100)
+    if not depth:
+        return -evaluate()
+
+    best_score = -inf if maximising else inf
+    for piece in board.pieces:
+        if piece.black == maximising:
+            moves = piece.scan_board()
+            for x, y in argwhere(moves):
+                move((piece.x, piece.y), (x, y))
+                if maximising:
+                    best_score = max(minimax(depth - 1, 0, 0, False), best_score)
+                else:
+                    best_score = min(minimax(depth - 1, 0, 0, True), best_score)
+                undo()
+    return best_score
