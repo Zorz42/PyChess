@@ -21,22 +21,23 @@ class Piece:
         self._saved_board = full((8, 8), False)
 
     def can_move(self):
+        self.update_board()
         return not (~self.scan_board()).all()
 
-    def protect_king(self, choices):
+    def protect_king(self):
         king = board.black_king if self.black else board.white_king
 
-        for x, y in argwhere(choices):
+        for x, y in argwhere(self._saved_board):
             move((self.x, self.y), (x, y))
             if king.in_danger():
-                choices[x][y] = False
+                self._saved_board[x][y] = False
             undo()
 
     def scan_board(self):
         return self._saved_board
 
     @abstractmethod
-    def update_board(self):
+    def update_board(self, ignore_king=False):
         pass
 
     @property
@@ -71,7 +72,11 @@ class King(Piece):
     def in_danger(self):
         for other in board.pieces:
             if other != self and self.black != other.black:
-                danger = other.get_attacks() if isinstance(other, Pawn) else other.scan_board()
+                if isinstance(other, Pawn):
+                    danger = other.get_attacks()
+                else:
+                    other.update_board(ignore_king=True)
+                    danger = other.scan_board()
                 if danger[self.x][self.y]:
                     return True
         return False
@@ -88,7 +93,7 @@ class King(Piece):
         self._saved_board[self.x][self.y] = False
 
         if not ignore_king:
-            self.protect_king(self._saved_board)
+            self.protect_king()
 
 
 class Queen(Piece):
@@ -116,7 +121,7 @@ class Queen(Piece):
                 self._saved_board[x][y] = True
 
         if not ignore_king:
-            self.protect_king(self._saved_board)
+            self.protect_king()
 
 
 class Rook(Piece):
@@ -143,7 +148,7 @@ class Rook(Piece):
                 self._saved_board[x][y] = True
 
         if not ignore_king:
-            self.protect_king(self._saved_board)
+            self.protect_king()
 
 
 class Bishop(Piece):
@@ -170,7 +175,7 @@ class Bishop(Piece):
                 self._saved_board[x][y] = True
 
         if not ignore_king:
-            self.protect_king(self._saved_board)
+            self.protect_king()
 
 
 class Knight(Piece):
@@ -191,14 +196,14 @@ class Knight(Piece):
             self._saved_board[x][y] = not curr_piece or self.black != curr_piece.black
 
         if not ignore_king:
-            self.protect_king(self._saved_board)
+            self.protect_king()
 
 
 class Pawn(Piece):
     texture_y = 5
     _weight = 1
 
-    def update_board(self):
+    def update_board(self, ignore_king=False):
         self._saved_board = full((8, 8), False)
         if not 0 < self.y < 7:
             return
@@ -217,7 +222,8 @@ class Pawn(Piece):
             if piece and self.black != piece.black:
                 self._saved_board[self.x + x][self.y + direction] = True
 
-        self.protect_king(self._saved_board)
+        if not ignore_king:
+            self.protect_king()
 
     def get_attacks(self):
         choices = (full((8, 8), False))
