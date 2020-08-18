@@ -21,7 +21,6 @@ def move(old: tuple, new: tuple, store_move=True):
     if piece:
         piece.x = new[0]
         piece.y = new[1]
-
     return piece
 
 

@@ -18,6 +18,7 @@ def play():
 
     for piece in board.pieces:
         if piece.black:
+            piece.update_board()
             moves = piece.scan_board()
             for x, y in argwhere(moves):
                 current_move = (piece.x, piece.y), (x, y)
@@ -41,6 +42,7 @@ def minimax(depth, alpha, beta, maximising):
     best_score = -inf if maximising else inf
     for piece in board.pieces:
         if piece.black == maximising:
+            piece.update_board()
             moves = piece.scan_board()
             for x, y in argwhere(moves):
                 move((piece.x, piece.y), (x, y))
