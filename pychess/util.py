@@ -43,6 +43,7 @@ def is_check(king):
 
 
 def is_stale(piece):
+    piece.update_board()
     return not piece.can_move()
 
 
