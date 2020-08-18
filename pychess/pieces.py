@@ -73,10 +73,7 @@ class King(Piece):
     def in_danger(self):
         for other in board.pieces:
             if other != self and self.black != other.black:
-                if isinstance(other, Pawn):
-                    danger = other.get_attacks()
-                else:
-                    danger = other.scan_board(ignore_king=True)
+                danger = other.get_attacks() if isinstance(other, Pawn) else other.scan_board(ignore_king=True)
                 if danger[self.x][self.y]:
                     return True
         return False
@@ -111,13 +108,11 @@ class Queen(Piece):
                 y = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
-                    continue
+                    break
 
                 curr_piece = get_piece(x, y)
-                if curr_piece is not None:
-                    if not self.black and curr_piece.black:
-                        choices[x][y] = True
-                    elif self.black and not curr_piece.black:
+                if curr_piece:
+                    if self.black != curr_piece.black:
                         choices[x][y] = True
                     break
 
@@ -142,13 +137,11 @@ class Rook(Piece):
                 y = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
-                    continue
+                    break
 
                 curr_piece = get_piece(x, y)
-                if curr_piece is not None:
-                    if not self.black and curr_piece.black:
-                        choices[x][y] = True
-                    elif self.black and not curr_piece.black:
+                if curr_piece:
+                    if self.black != curr_piece.black:
                         choices[x][y] = True
                     break
 
@@ -173,13 +166,11 @@ class Bishop(Piece):
                 y = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
-                    continue
+                    break
 
                 curr_piece = get_piece(x, y)
-                if curr_piece is not None:
-                    if not self.black and curr_piece.black:
-                        choices[x][y] = True
-                    elif self.black and not curr_piece.black:
+                if curr_piece:
+                    if self.black != curr_piece.black:
                         choices[x][y] = True
                     break
 
@@ -206,11 +197,7 @@ class Knight(Piece):
                 continue
 
             curr_piece = get_piece(x, y)
-
-            if self.black:
-                choices[x][y] = not curr_piece or not curr_piece.black
-            else:
-                choices[x][y] = not curr_piece or curr_piece.black
+            choices[x][y] = not curr_piece or self.black != curr_piece.black
 
         if not ignore_king:
             self.protect_king(choices)
