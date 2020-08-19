@@ -3,6 +3,7 @@ from os import path
 import pygame
 from numpy import full
 
+from . import speech
 from .algorithm import play
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
@@ -96,8 +97,7 @@ def handle(screen: pygame.display, event: pygame.event):
             piece_name = board.pending.__class__.__name__
             old_position = convert_to_algebraic_notation(board.pending.x, board.pending.y)
             new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
-            variables.engine.say(f'Player moves {piece_name} from {old_position} to {new_position}')
-            variables.engine.runAndWait()
+            speech.say(f'Player moves {piece_name} from {old_position} to {new_position}')
 
         board.pending.x = mouse_x
         board.pending.y = mouse_y
@@ -120,7 +120,6 @@ def handle(screen: pygame.display, event: pygame.event):
             piece_name = get_piece(*computer_move[1]).__class__.__name__
             old_position = convert_to_algebraic_notation(*computer_move[0])
             new_position = convert_to_algebraic_notation(*computer_move[1])
-            variables.engine.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
-            variables.engine.runAndWait()
+            speech.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
 
         display_end_messages()
