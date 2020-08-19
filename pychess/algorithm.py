@@ -33,7 +33,7 @@ def get_all_moves(ignore_king=True, black=True):
 def play() -> Optional[tuple]:
     new_game_moves = get_all_moves(ignore_king=False)
 
-    best_move: int = -inf
+    best_move: float = -inf
     best_move_found: Optional[tuple] = None
     new_game_move: Optional[tuple]
 

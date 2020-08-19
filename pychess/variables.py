@@ -28,5 +28,5 @@ board = Board()
 cell_size = 64
 window_padding = 40
 
-use_tts_for_player = False
+use_tts_for_player = True
 use_tts_for_computer = True
