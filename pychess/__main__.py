@@ -1,3 +1,6 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'true'
+
 import pygame
 
 from . import init, handle, render, board
