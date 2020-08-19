@@ -1,16 +1,18 @@
+from typing import Optional
+
 from numpy import full
 
 from .variables import board
 
 
-def get_piece(x: int, y: int):
+def get_piece(x: int, y: int) -> Optional['Piece']:
     for piece in board.pieces:
         if piece.x == x and piece.y == y:
             return piece
     return None
 
 
-def move(old: tuple, new: tuple, store_move=True):
+def move(old: tuple, new: tuple, store_move: bool = True):
     piece_to_be_eaten = get_piece(new[0], new[1])
     if piece_to_be_eaten:
         board.pieces.remove(piece_to_be_eaten)
@@ -38,16 +40,16 @@ def undo():
         board.pieces.append(last_eaten)
 
 
-def is_check(king):
+def is_check(king) -> bool:
     return king.in_danger()
 
 
-def is_stale(piece):
+def is_stale(piece) -> bool:
     piece.update_board()
     return not piece.can_move()
 
 
-def is_checkmate(king):
+def is_checkmate(king) -> bool:
     for piece in board.pieces:
         if king.black == piece.black:
             if not is_stale(piece):
@@ -55,7 +57,7 @@ def is_checkmate(king):
     return is_check(king)
 
 
-def is_stalemate(black):
+def is_stalemate(black: bool) -> bool:
     for piece in board.pieces:
         if black != piece.black:
             if not is_stale(piece):
@@ -69,7 +71,7 @@ def update_pieces():
         piece.update_board()
 
 
-def get_board_state():
+def get_board_state() -> tuple:
     state = full((8, 8), -1)
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10

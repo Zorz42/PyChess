@@ -1,4 +1,4 @@
-from numpy import full
+from numpy import full, ndarray
 
 
 class Board:
@@ -8,10 +8,10 @@ class Board:
         lost = 2
         draw = 3
 
-    state = State.none
+    state: int = State.none
 
-    choices = full((8, 8), False)
-    pieces = []
+    choices: ndarray = full((8, 8), False)
+    pieces: list = []
     pending = None
 
     white_king = None

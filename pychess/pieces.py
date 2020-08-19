@@ -1,23 +1,24 @@
 from abc import abstractmethod
 from os import path
+from typing import List
 
 import pygame
-from numpy import full, argwhere, ndindex
+from numpy import full, argwhere, ndindex, ndarray
 
 from .util import get_piece, move, undo
 from .variables import cell_size, window_padding, board
 
 
 class Piece:
-    texture = pygame.image.load(path.dirname(__file__) + '/resources/pieces.png')
+    texture: pygame.image = pygame.image.load(path.dirname(__file__) + '/resources/pieces.png')
 
-    texture_y = None
+    texture_y: int = None
 
-    _weight = None
-    _weights = None
+    _weight: int = None
+    _weights: List[List[int]] = None
 
-    _black_weights = None
-    _white_weights = None
+    _black_weights: List[List[int]] = None
+    _white_weights: List[List[int]] = None
 
     def __init__(self, x: int, y: int, black: bool):
         self.x = x
@@ -25,27 +26,29 @@ class Piece:
         self.black = black
         self._saved_board = full((8, 8), False)
 
-    def can_move(self):
+    def can_move(self) -> bool:
         return not (~self.scan_board()).all()
 
     def protect_king(self):
         king = board.black_king if self.black else board.white_king
 
+        x: int
+        y: int
         for x, y in argwhere(self._saved_board):
             move((self.x, self.y), (x, y))
             if king.in_danger():
                 self._saved_board[x][y] = False
             undo()
 
-    def scan_board(self):
+    def scan_board(self) -> ndarray:
         return self._saved_board
 
     @abstractmethod
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         pass
 
     @property
-    def weight(self):
+    def weight(self) -> float:
         if not self._black_weights and self.black:
             self._black_weights = self._weights[::-1]
         if not self._white_weights and not self.black:
@@ -55,7 +58,7 @@ class Piece:
         position_weight = self._black_weights[self.y][self.x] if self.black else self._white_weights[self.y][self.x]
         return base_weight + position_weight
 
-    def render(self, screen):
+    def render(self, screen: pygame.display):
         screen.blit(self.texture, (
             (self.x * cell_size) + window_padding,
             (self.y * cell_size) + window_padding
@@ -91,7 +94,7 @@ class King(Piece):
         else:
             board.white_king = self
 
-    def in_danger(self):
+    def in_danger(self) -> bool:
         for other in board.pieces:
             if other != self and self.black != other.black:
                 if isinstance(other, Pawn):
@@ -103,8 +106,11 @@ class King(Piece):
                     return True
         return False
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
+
+        x: int
+        y: int
         for x, y in ndindex((3, 3)):
             abs_x = self.x + x - 1
             abs_y = self.y + y - 1
@@ -133,7 +139,7 @@ class Queen(Piece):
         [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
     ]
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
 
         for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
@@ -172,13 +178,13 @@ class Rook(Piece):
         [0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0],
     ]
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
 
         for orientation in ((0, -1), (-1, 0), (1, 0), (0, 1)):
             for pos in range(1, 8):
-                x = self.x + pos * orientation[0]
-                y = self.y + pos * orientation[1]
+                x: int = self.x + pos * orientation[0]
+                y: int = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
                     break
@@ -210,13 +216,13 @@ class Bishop(Piece):
         [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
     ]
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
             for pos in range(1, 8):
-                x = self.x + pos * orientation[0]
-                y = self.y + pos * orientation[1]
+                x: int = self.x + pos * orientation[0]
+                y: int = self.y + pos * orientation[1]
 
                 if x < 0 or x > 7 or y < 0 or y > 7:
                     break
@@ -248,9 +254,10 @@ class Knight(Piece):
         [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
     ]
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
 
+        target: tuple
         for target in ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (2, -1), (1, -2)):
             x = self.x + target[0]
             y = self.y + target[1]
@@ -280,13 +287,14 @@ class Pawn(Piece):
         [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
     ]
 
-    def update_board(self, ignore_king=False):
+    def update_board(self, ignore_king: bool = False):
         self._saved_board = full((8, 8), False)
         if not 0 < self.y < 7:
             return
 
         direction = 1 if self.black else -1
 
+        y: int
         for y in range(2 if (self.y == (1 if self.black else 6)) else 1):
             abs_y = self.y + y * direction + direction
             if 0 <= abs_y < 8:
@@ -294,6 +302,7 @@ class Pawn(Piece):
                     break
                 self._saved_board[self.x][abs_y] = True
 
+        x: int
         for x in (-1, 1):
             piece = get_piece(self.x + x, self.y + direction)
             if piece and self.black != piece.black:
@@ -302,7 +311,7 @@ class Pawn(Piece):
         if not ignore_king:
             self.protect_king()
 
-    def get_attacks(self):
+    def get_attacks(self) -> ndarray:
         choices = (full((8, 8), False))
 
         direction = 1 if self.black else -1
