@@ -8,10 +8,11 @@ from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation
 from .variables import cell_size, window_padding, board
+from .messages import display_lost, display_won, display_game_draw, messages_init
 
 
 def place_pieces():
-    for is_black in (True, False):
+    """for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
 
@@ -21,29 +22,39 @@ def place_pieces():
             board.pieces.append(piece(7 - i, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
+"""
+    """# Example that does not work
+    # Try to move pawn (it does not work) and other pieces (they work)
+    board.pieces.append(Pawn(0, 6, False))
+    board.pieces.append(King(5, 5, False))
+    board.pieces.append(Rook(7, 4, False))
+    board.pieces.append(King(7, 7, True))
+"""
+
+    board.pieces.append(Rook(7, 1, True))
+    board.pieces.append(Rook(6, 1, True))
+    board.pieces.append(Rook(3, 1, True))
+    board.pieces.append(King(6, 3, False))
+    board.pieces.append(King(0, 7, True))
+    board.pieces.append(Bishop(2, 2, True))
 
 
 def display_end_messages():
+    for piece in board.pieces:
+        piece.update_board()
     if is_checkmate(board.white_king):
-        print('Player lost')
         board.state = board.State.lost
-        return
-
-    if is_checkmate(board.black_king):
-        print('Player won')
+    elif is_checkmate(board.black_king):
         board.state = board.State.won
-        return
-
-    if is_stalemate(black=True) or is_stalemate(black=False):
-        print('Game draw')
+    elif is_stalemate(board.black_king) or is_stalemate(board.white_king):
         board.state = board.State.draw
-        return
 
 
 def init():
     icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
 
     pygame.init()
+    messages_init()
     pygame.display.set_caption('PyChess')
     pygame.display.set_icon(icon)
 
@@ -58,8 +69,15 @@ def init():
 def render(screen: pygame.display):
     render_board(screen)
     render_pieces(screen)
-    render_choices(screen)
-    render_hover(screen)
+    if board.state == board.State.playing:
+        render_choices(screen)
+        render_hover(screen)
+    elif board.state == board.State.draw:
+        display_game_draw(screen)
+    elif board.state == board.State.lost:
+        display_lost(screen)
+    elif board.state == board.State.won:
+        display_won(screen)
 
     pygame.display.flip()
 
