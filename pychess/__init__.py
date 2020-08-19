@@ -25,12 +25,15 @@ def place_pieces():
 
 def display_end_messages():
     if is_checkmate(board.white_king):
+        print('Player lost')
         board.state = board.State.lost
 
     if is_checkmate(board.black_king):
+        print('Player won')
         board.state = board.State.won
 
     if is_stalemate(black=True) or is_stalemate(black=False):
+        print('Game draw')
         board.state = board.State.draw
 
 
@@ -71,7 +74,7 @@ def handle(screen: pygame.display, event: pygame.event):
             return
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece and not piece.black:
+        if piece: # and not piece.black:
             board.pending = piece
             piece.update_board()
             board.choices = piece.scan_board()

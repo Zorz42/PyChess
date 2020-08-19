@@ -48,12 +48,12 @@ def is_stale(piece):
 
 
 def is_checkmate(king):
-    is_stalemate_ = True
+    is_stale_ = True
     for piece in board.pieces:
         if king.black != piece.black:
             if not is_stale(piece):
-                is_stalemate_ = False
-    return is_check(king) and is_stalemate_
+                is_stale_ = False
+    return is_check(king) and is_stale_
 
 
 def is_stalemate(black):
@@ -71,7 +71,7 @@ def update_pieces():
 
 
 def get_board_state():
-    state = full((8, 8), None)
+    state = full((8, 8), -1)
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10
     return tuple(map(tuple, state))
