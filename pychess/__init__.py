@@ -11,7 +11,6 @@ from .variables import cell_size, window_padding, board
 
 
 def place_pieces():
-    """
     for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
@@ -22,14 +21,6 @@ def place_pieces():
             board.pieces.append(piece(7 - i, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
-    """
-
-    # Example that does not work
-    # Try to move pawn (it does not work) and other pieces (they work)
-    board.pieces.append(Pawn(0, 6, False))
-    board.pieces.append(King(5, 5, False))
-    board.pieces.append(Rook(7, 4, False))
-    board.pieces.append(King(7, 7, True))
 
 
 def display_end_messages():
