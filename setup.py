@@ -34,5 +34,6 @@ setup(
     install_requires=[
         'pygame>=2.0.0<3.0.0',
         'numpy>=1.0.0<2.0.0',
+        'pyttsx3>=2.0.0<3.0.0'
     ],
 )

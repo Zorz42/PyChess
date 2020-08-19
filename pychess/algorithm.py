@@ -14,7 +14,7 @@ def evaluate():
     return result
 
 
-def get_all_moves(ignore_king=True):
+def get_all_moves(ignore_king=True, black=True):
     result: list = []
     piece: Piece
     for piece in reversed(board.pieces):

@@ -74,5 +74,5 @@ def get_board_state() -> tuple:
 
 def convert_to_algebraic_notation(x, y):
     return \
-        'abcdefgh'[x+1] + \
+        'abcdefgh'[x] + \
         str(8 - y)
