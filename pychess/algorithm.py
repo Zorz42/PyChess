@@ -3,18 +3,18 @@ from typing import Optional
 from numpy import argwhere, inf
 
 from .pieces import Piece
-from .util import move, undo, get_board_state
+from .util import move, undo, get_board_state, is_checkmate
 from .variables import board
 
 
-def evaluate():
+def evaluate() -> float:
     result: float = 0
     for piece in board.pieces:
         result += piece.weight
     return result
 
 
-def get_all_moves(ignore_king=True, black=True):
+def get_all_moves(ignore_king=True, black=True) -> list:
     result: list = []
     piece: Piece
     for piece in reversed(board.pieces):
