@@ -77,7 +77,7 @@ def handle(screen: pygame.display, event: pygame.event):
             return
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece: # and not piece.black:
+        if piece and not piece.black:
             board.pending = piece
             piece.update_board()
             board.choices = piece.scan_board()
