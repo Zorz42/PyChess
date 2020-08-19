@@ -34,7 +34,7 @@ def get_all_moves(ignore_king: bool = True) -> list:
     return result
 
 
-def play():
+def play() -> Optional[tuple]:
     new_game_moves = get_all_moves(ignore_king=False)
 
     best_move: int = -inf
@@ -53,7 +53,7 @@ def play():
 
     if best_move_found:
         move(*best_move_found)
-
+        return best_move_found
 
 def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> int:
     if not depth:

@@ -76,3 +76,9 @@ def get_board_state() -> tuple:
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10
     return tuple(map(tuple, state))
+
+
+def convert_to_algebraic_notation(x, y):
+    return \
+        'abcdefgh'[x+1] + \
+        str(8 - y)

@@ -6,7 +6,7 @@ from numpy import full
 from .algorithm import play
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece, is_checkmate, is_stalemate
+from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation
 from .variables import cell_size, window_padding, board
 
 
@@ -89,6 +89,13 @@ def handle(screen: pygame.display, event: pygame.event):
         if piece:
             board.pieces.remove(piece)
 
+        if variables.use_tts_for_player:
+            piece_name = board.pending.__class__.__name__
+            old_position = convert_to_algebraic_notation(board.pending.x, board.pending.y)
+            new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
+            variables.engine.say(f'Player moves {piece_name} from {old_position} to {new_position}')
+            variables.engine.runAndWait()
+
         board.pending.x = mouse_x
         board.pending.y = mouse_y
 
@@ -103,7 +110,14 @@ def handle(screen: pygame.display, event: pygame.event):
 
         from time import time
         start = time()
-        play()
+        computer_move = play()
         print(time() - start)
+
+        if variables.use_tts_for_computer:
+            piece_name = get_piece(*computer_move[1]).__class__.__name__
+            old_position = convert_to_algebraic_notation(*computer_move[0])
+            new_position = convert_to_algebraic_notation(*computer_move[1])
+            variables.engine.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
+            variables.engine.runAndWait()
 
         display_end_messages()

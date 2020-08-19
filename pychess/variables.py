@@ -27,3 +27,11 @@ board = Board()
 
 cell_size = 64
 window_padding = 40
+
+use_tts_for_player = True
+use_tts_for_computer = True
+
+if use_tts_for_player or use_tts_for_computer:
+    import pyttsx3
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
