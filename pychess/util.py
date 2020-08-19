@@ -45,7 +45,6 @@ def is_check(king) -> bool:
 
 
 def is_stale(piece) -> bool:
-    piece.update_board()
     return not piece.can_move()
 
 
@@ -73,6 +72,4 @@ def get_board_state() -> tuple:
 
 
 def convert_to_algebraic_notation(x, y):
-    return \
-        'abcdefgh'[x] + \
-        str(8 - y)
+    return 'abcdefgh'[x] + str(8 - y)

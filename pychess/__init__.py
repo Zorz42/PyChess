@@ -28,6 +28,7 @@ def place_pieces():
 def display_end_messages():
     for piece in board.pieces:
         piece.update_board()
+
     if is_checkmate(board.white_king):
         board.state = board.State.lost
     elif is_checkmate(board.black_king):
@@ -81,7 +82,7 @@ def handle(screen: pygame.display, event: pygame.event):
             return
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece and not piece.black:
+        if piece:  # and not piece.black:
             board.pending = piece
             piece.update_board()
             board.choices = piece.scan_board()
@@ -111,7 +112,7 @@ def handle(screen: pygame.display, event: pygame.event):
 
         render(screen)
 
-        from time import time
+        """from time import time
         start = time()
         computer_move = play()
         print(time() - start)
@@ -120,6 +121,6 @@ def handle(screen: pygame.display, event: pygame.event):
             piece_name = get_piece(*computer_move[1]).__class__.__name__
             old_position = convert_to_algebraic_notation(*computer_move[0])
             new_position = convert_to_algebraic_notation(*computer_move[1])
-            speech.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
+            speech.say(f'Computer moves {piece_name} from {old_position} to {new_position}')"""
 
         display_end_messages()
