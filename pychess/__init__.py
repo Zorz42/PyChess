@@ -8,6 +8,7 @@ from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, is_checkmate, is_stalemate
 from .variables import cell_size, window_padding, board
+from .messages import display_lost, display_won, display_game_draw, messages_init
 
 
 def place_pieces():
@@ -34,25 +35,18 @@ def place_pieces():
 
 def display_end_messages():
     if is_checkmate(board.white_king):
-        print('Player lost')
         board.state = board.State.lost
-        return
-
-    if is_checkmate(board.black_king):
-        print('Player won')
+    elif is_checkmate(board.black_king):
         board.state = board.State.won
-        return
-
-    if is_stalemate(black=True) or is_stalemate(black=False):
-        print('Game draw')
+    elif is_stalemate(black=True) or is_stalemate(black=False):
         board.state = board.State.draw
-        return
 
 
 def init():
     icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
 
     pygame.init()
+    messages_init()
     pygame.display.set_caption('PyChess')
     pygame.display.set_icon(icon)
 
@@ -67,8 +61,15 @@ def init():
 def render(screen: pygame.display):
     render_board(screen)
     render_pieces(screen)
-    render_choices(screen)
-    render_hover(screen)
+    if board.state == board.State.playing:
+        render_choices(screen)
+        render_hover(screen)
+    elif board.state == board.State.draw:
+        display_game_draw(screen)
+    elif board.state == board.State.lost:
+        display_lost(screen)
+    elif board.state == board.State.won:
+        display_won(screen)
 
     pygame.display.flip()
 
@@ -86,7 +87,7 @@ def handle(screen: pygame.display, event: pygame.event):
             return
 
         piece = get_piece(mouse_x, mouse_y)
-        if piece: # and not piece.black:
+        if piece:  # and not piece.black:
             board.pending = piece
             piece.update_board()
             board.choices = piece.scan_board()

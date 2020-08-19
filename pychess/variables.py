@@ -3,12 +3,12 @@ from numpy import full
 
 class Board:
     class State:
-        none = 0
+        playing = 0
         won = 1
         lost = 2
         draw = 3
 
-    state = State.none
+    state = State.playing
 
     choices = full((8, 8), False)
     pieces = []
