@@ -52,13 +52,13 @@ def play() -> Optional[tuple]:
         return best_move_found
 
 
-def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> int:
+def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> float:
     if not depth:
         return -evaluate()
 
     new_game_moves = get_all_moves(black=maximising)
 
-    best_score: int = -inf if maximising else inf
+    best_score: float = -inf if maximising else inf
     move_: tuple
 
     for move_ in new_game_moves:
@@ -67,9 +67,9 @@ def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> int:
         state = get_board_state()
 
         if state in board.transposition:
-            current_score: int = board.transposition[state]
+            current_score: float = board.transposition[state]
         else:
-            current_score: int = minimax(depth - 1, alpha, beta, not maximising)
+            current_score: float = minimax(depth - 1, alpha, beta, not maximising)
 
         best_score = max(best_score, current_score) if maximising else min(best_score, current_score)
         undo()
