@@ -48,12 +48,11 @@ def is_stale(piece):
 
 
 def is_checkmate(king):
-    is_stale_ = True
     for piece in board.pieces:
         if king.black != piece.black:
             if not is_stale(piece):
-                is_stale_ = False
-    return is_check(king) and is_stale_
+                return False
+    return is_check(king)
 
 
 def is_stalemate(black):
