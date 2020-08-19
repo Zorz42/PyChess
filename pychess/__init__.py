@@ -36,14 +36,17 @@ def display_end_messages():
     if is_checkmate(board.white_king):
         print('Player lost')
         board.state = board.State.lost
+        return
 
     if is_checkmate(board.black_king):
         print('Player won')
         board.state = board.State.won
+        return
 
     if is_stalemate(black=True) or is_stalemate(black=False):
         print('Game draw')
         board.state = board.State.draw
+        return
 
 
 def init():
