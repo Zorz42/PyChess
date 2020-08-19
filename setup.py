@@ -13,7 +13,7 @@ extensions = cythonize([
     'pychess/pieces.py',
     'pychess/algorithm.py',
     'pychess/variables.py',
-], annotate=True)
+])
 
 for extension in extensions:
     extension.optional = True
