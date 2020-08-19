@@ -11,10 +11,10 @@ def evaluate():
     return result
 
 
-def get_all_moves(ignore_king=True):
+def get_all_moves(ignore_king=True, black=True):
     result = []
     for piece in reversed(board.pieces):
-        if piece.black:
+        if piece.black == black:
             piece.update_board(ignore_king)
             moves = piece.scan_board()
             for x, y in argwhere(moves):
@@ -28,13 +28,13 @@ def play():
     best_move_found = None
     for new_game_move in new_game_moves:
         move(*new_game_move)
-        value = minimax(3, -inf, inf, True)
+        value = minimax(2, -inf, inf, False)
         undo()
         if value >= best_move:
             best_move = value
             best_move_found = new_game_move
 
-    print(best_move, end='\t - \t')
+    # print(best_move, end='\t - \t')
 
     if best_move_found:
         move(*best_move_found)
@@ -44,7 +44,7 @@ def minimax(depth, alpha, beta, maximising):
     if not depth:
         return -evaluate()
 
-    new_game_moves = get_all_moves()
+    new_game_moves = get_all_moves(black=maximising)
 
     best_move = -inf if maximising else inf
 
@@ -66,6 +66,6 @@ def minimax(depth, alpha, beta, maximising):
             beta = min(beta, best_move)
         if beta <= alpha:
             return best_move
-        board.transposition[state] = current_score
+        # board.transposition[state] = current_score
 
     return best_move

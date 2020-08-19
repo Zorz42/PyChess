@@ -42,31 +42,20 @@ def is_check(king):
     return king.in_danger()
 
 
-def is_stale(piece):
-    piece.update_board()
-    return not piece.can_move()
-
-
 def is_checkmate(king):
     for piece in board.pieces:
         if king.black == piece.black:
-            if not is_stale(piece):
+            if piece.can_move():
                 return False
     return is_check(king)
 
 
-def is_stalemate(black):
+def is_stalemate(king):
     for piece in board.pieces:
-        if black != piece.black:
-            if not is_stale(piece):
+        if king.black == piece.black:
+            if piece.can_move():
                 return False
-
-    return not is_check(board.black_king if black else board.white_king)
-
-
-def update_pieces():
-    for piece in board.pieces:
-        piece.update_board()
+    return not is_check(king)
 
 
 def get_board_state():

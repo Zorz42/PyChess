@@ -16,11 +16,11 @@ def messages_init():
     win_text_rect.center = window_padding + cell_size * 4, window_padding + cell_size * 4
 
     lose_text = font.render('You Lose!', True, (184, 15, 10))
-    lose_text_rect = win_text.get_rect()
+    lose_text_rect = lose_text.get_rect()
     lose_text_rect.center = window_padding + cell_size * 4, window_padding + cell_size * 4
 
     draw_text = font.render('Draw!', True, (220, 220, 0))
-    draw_text_rect = win_text.get_rect()
+    draw_text_rect = draw_text.get_rect()
     draw_text_rect.center = window_padding + cell_size * 4, window_padding + cell_size * 4
 
 
