@@ -11,9 +11,9 @@ def get_piece(x: int, y: int) -> Optional['Piece']:
 
 def move(old: tuple, new: tuple, store_move: bool = True) -> Optional['Piece']:
     piece_to_be_eaten = get_piece(new[0], new[1])
-    if piece_to_be_eaten:
+    if piece_to_be_eaten and piece_to_be_eaten in board.pieces:
         board.pieces.remove(piece_to_be_eaten)
-        board.cached_board[new[0]][new[1]] = None
+    board.cached_board[new[0]][new[1]] = None
 
     if store_move:
         board.moves_stack.append((old, new))
