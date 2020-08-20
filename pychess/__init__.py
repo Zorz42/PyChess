@@ -1,4 +1,5 @@
 from os import path
+from time import time
 
 import pygame
 from numpy import full
@@ -9,7 +10,7 @@ from .messages import display_lost, display_won, display_game_draw, messages_ini
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, convert_to_algebraic_notation, move, get_game_state
-from .variables import cell_size, window_padding, board
+from .variables import cell_size, window_padding, board, use_tts_for_computer, use_tts_for_player
 
 
 def place_pieces() -> None:
@@ -23,12 +24,6 @@ def place_pieces() -> None:
             board.pieces.append(piece(7 - i, other_y, is_black))
         board.pieces.append(Queen(3, other_y, is_black))
         board.pieces.append(King(4, other_y, is_black))
-
-
-def display_end_messages() -> None:
-    for piece in board.pieces:
-        piece.update_board()
-    board.state = get_game_state()
 
 
 def init() -> pygame.display:
@@ -50,6 +45,9 @@ def init() -> pygame.display:
 def render(screen: pygame.display) -> None:
     render_board(screen)
     render_pieces(screen)
+
+    board.state = get_game_state()
+
     if board.state == board.State.playing:
         render_choices(screen)
         render_hover(screen)
@@ -59,7 +57,6 @@ def render(screen: pygame.display) -> None:
         display_lost(screen)
     elif board.state == board.State.won:
         display_won(screen)
-
     pygame.display.flip()
 
 
@@ -82,39 +79,37 @@ def handle(screen: pygame.display, event: pygame.event) -> None:
             board.choices = piece.scan_board()
             return
 
-        if not board.choices[mouse_x][mouse_y]:
-            return
+        if board.choices[mouse_x][mouse_y]:
+            if piece:
+                board.pieces.remove(piece)
+                board.cached_board[piece.x][piece.y] = None
 
-        if piece:
-            board.pieces.remove(piece)
-            board.cached_board[piece.x][piece.y] = None
+            if use_tts_for_player:
+                piece_name = board.pending.__class__.__name__
+                old_position = convert_to_algebraic_notation(board.pending.x, board.pending.y)
+                new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
+                speech.say(f'Player moves {piece_name} from {old_position} to {new_position}')
 
-        if variables.use_tts_for_player:
-            piece_name = board.pending.__class__.__name__
-            old_position = convert_to_algebraic_notation(board.pending.x, board.pending.y)
-            new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
-            speech.say(f'Player moves {piece_name} from {old_position} to {new_position}')
+            move((board.pending.x, board.pending.y), (mouse_x, mouse_y), store_move=False)
 
-        move((board.pending.x, board.pending.y), (mouse_x, mouse_y), store_move=False)
+            board.pending = None
+            board.choices = full((8, 8), False)
 
-        board.pending = None
-        board.choices = full((8, 8), False)
+            board.state = get_game_state()
+            if board.state:
+                return
 
-        display_end_messages()
-        if board.state:
-            return
+            render(screen)
 
-        render(screen)
+            start = time()
+            computer_move = play()
+            print(time() - start)
 
-        from time import time
-        start = time()
-        computer_move = play()
-        print(time() - start)
+            if use_tts_for_computer:
+                piece_name = get_piece(*computer_move[1]).__class__.__name__
+                old_position = convert_to_algebraic_notation(*computer_move[0])
+                new_position = convert_to_algebraic_notation(*computer_move[1])
+                speech.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
 
-        if variables.use_tts_for_computer:
-            piece_name = get_piece(*computer_move[1]).__class__.__name__
-            old_position = convert_to_algebraic_notation(*computer_move[0])
-            new_position = convert_to_algebraic_notation(*computer_move[1])
-            speech.say(f'Computer moves {piece_name} from {old_position} to {new_position}')
-
-        display_end_messages()
+            for piece in board.pieces:
+                piece.update_board()

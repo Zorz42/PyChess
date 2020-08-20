@@ -7,9 +7,14 @@ except ImportError:
         return []
 
 extensions = cythonize([
-    'pychess/util.py',
-    'pychess/pieces.py',
+    'pychess/__init__.py',
+    # 'pychess/__main__.py',
     'pychess/algorithm.py',
+    'pychess/messages.py',
+    'pychess/pieces.py',
+    'pychess/renderers.py',
+    'pychess/speech.py',
+    'pychess/util.py',
     'pychess/variables.py',
 ])
 
