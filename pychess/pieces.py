@@ -25,6 +25,7 @@ class Piece:
         self.y = y
         self.black = black
         self._saved_board = full((8, 8), False)
+        board.cached_board[x][y] = self
 
     def can_move(self) -> bool:
         self.update_board()
@@ -305,9 +306,10 @@ class Pawn(Piece):
 
         x: int
         for x in (-1, 1):
-            piece = get_piece(self.x + x, self.y + direction)
-            if piece and self.black != piece.black:
-                self._saved_board[self.x + x][self.y + direction] = True
+            if 0 <= self.x + x < 8:
+                piece = get_piece(self.x + x, self.y + direction)
+                if piece and self.black != piece.black:
+                    self._saved_board[self.x + x][self.y + direction] = True
 
         if not ignore_king:
             self.protect_king()

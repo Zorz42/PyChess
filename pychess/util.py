@@ -6,16 +6,16 @@ from .variables import board
 
 
 def get_piece(x: int, y: int) -> Optional['Piece']:
-    for piece in board.pieces:
-        if piece.x == x and piece.y == y:
-            return piece
-    return None
+    #if x >= 8 or y >= 8:
+        #return None
+    return board.cached_board[x][y]
 
 
 def move(old: tuple, new: tuple, store_move: bool = True):
     piece_to_be_eaten = get_piece(new[0], new[1])
     if piece_to_be_eaten:
         board.pieces.remove(piece_to_be_eaten)
+        board.cached_board[new[0]][new[1]] = None
 
     if store_move:
         board.moves_stack.append((old, new))
@@ -23,8 +23,10 @@ def move(old: tuple, new: tuple, store_move: bool = True):
 
     piece = get_piece(old[0], old[1])
     if piece:
+        board.cached_board[old[0]][old[1]] = None
         piece.x = new[0]
         piece.y = new[1]
+        board.cached_board[new[0]][new[1]] = piece
 
     return piece
 
@@ -39,6 +41,7 @@ def undo():
     move(last_move[1], last_move[0], store_move=False)
     if last_eaten:
         board.pieces.append(last_eaten)
+        board.cached_board[last_eaten.x][last_eaten.y] = last_eaten
 
 
 def is_check(king) -> bool:

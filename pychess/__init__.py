@@ -8,7 +8,7 @@ from .algorithm import play
 from .messages import display_lost, display_won, display_game_draw, messages_init
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation
+from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation, move
 from .variables import cell_size, window_padding, board
 
 
@@ -100,8 +100,7 @@ def handle(screen: pygame.display, event: pygame.event):
             new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
             speech.say(f'Player moves {piece_name} from {old_position} to {new_position}')
 
-        board.pending.x = mouse_x
-        board.pending.y = mouse_y
+        move((board.pending.x, board.pending.y), (mouse_x, mouse_y))
 
         board.pending = None
         board.choices = full((8, 8), False)

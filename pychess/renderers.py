@@ -53,11 +53,11 @@ def render_hover(screen: pygame.display):
     if mouse_x > window_padding and mouse_y > window_padding:
         mouse_x = int((mouse_x - window_padding) / cell_size)
         mouse_y = int((mouse_y - window_padding) / cell_size)
-
-        piece = get_piece(mouse_x, mouse_y)
-        if piece and not piece.black:
-            if mouse_x < 8 and mouse_y < 8:
-                screen.blit(hover_surface, (
-                    mouse_x * cell_size + window_padding,
-                    mouse_y * cell_size + window_padding
-                ))
+        if mouse_x < 8 and mouse_y < 8:
+            piece = get_piece(mouse_x, mouse_y)
+            if piece and not piece.black:
+                if mouse_x < 8 and mouse_y < 8:
+                    screen.blit(hover_surface, (
+                        mouse_x * cell_size + window_padding,
+                        mouse_y * cell_size + window_padding
+                    ))

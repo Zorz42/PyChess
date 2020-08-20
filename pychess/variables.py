@@ -1,4 +1,4 @@
-from numpy import full, ndarray
+from numpy import full, ndarray, empty
 
 
 class Board:
@@ -21,6 +21,8 @@ class Board:
     eaten_stack = []
 
     transposition = {}
+
+    cached_board = empty((8, 8), dtype=object)
 
 
 board = Board()
