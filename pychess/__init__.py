@@ -10,7 +10,7 @@ from .messages import display_lost, display_won, display_game_draw, messages_ini
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, convert_to_algebraic_notation, move, get_game_state
-from .variables import cell_size, window_padding, board, use_tts_for_computer, use_tts_for_player
+from .variables import cell_size, window_padding, board, use_tts_for_computer, use_tts_for_player, window_size
 
 
 def place_pieces() -> None:
@@ -34,7 +34,6 @@ def init() -> pygame.display:
     pygame.display.set_caption('PyChess')
     pygame.display.set_icon(icon)
 
-    window_size = cell_size * 8 + window_padding * 2
     screen = pygame.display.set_mode((window_size, window_size))
 
     place_pieces()

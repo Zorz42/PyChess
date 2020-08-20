@@ -2,16 +2,28 @@ import pygame
 from pygame import gfxdraw
 
 from .util import get_piece
-from .variables import cell_size, window_padding, board
+from .variables import cell_size, window_padding, board, window_size
 
-green_dot_radius = int(cell_size / 4.5)
+green_dot_radius = 11
 green_dot_color = (11, 218, 81)
 green_dot_color_hover = (8, 163, 61)
+shadow_radius = 8
+
+
+def render_background(screen: pygame.display) -> None:
+    for i in range(window_padding):
+        pygame.draw.rect(screen, (int(i / 1.75), int(i / 1.75), int(i / 1.75)), (i, i, window_size - i * 2, window_size - i * 2))
 
 
 def render_board(screen: pygame.display) -> None:
-    screen.fill((10, 10, 10))
+    render_background(screen)
 
+    pygame.draw.rect(screen, (150, 150, 150),
+                     (window_padding - 1,
+                      window_padding - 1,
+                      window_size - window_padding * 2 + 2,
+                      window_size - window_padding * 2 + 2
+                      ))
     for x in range(8):
         for y in range(8):
             color = (200, 200, 200) if (x + y) % 2 else (130, 130, 130)
@@ -40,6 +52,14 @@ def render_choices(screen: pygame.display) -> None:
             if board.choices[x][y]:
                 x_pos = int(x * cell_size + window_padding + cell_size / 2)
                 y_pos = int(y * cell_size + window_padding + cell_size / 2)
+
+                for i in range(1, shadow_radius + 1):
+                    if (x + y) % 2:
+                        multiplicator = int(30 - 30 / shadow_radius * i) + 170
+                    else:
+                        multiplicator = int(20 - 20 / shadow_radius * i) + 110
+                    shadow_color = (multiplicator, multiplicator, multiplicator)
+                    pygame.draw.circle(screen, shadow_color, (x_pos, y_pos), green_dot_radius + shadow_radius - i)
                 gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, color)
                 gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, color)
 
