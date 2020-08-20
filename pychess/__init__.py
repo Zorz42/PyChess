@@ -100,7 +100,7 @@ def handle(screen: pygame.display, event: pygame.event):
             new_position = convert_to_algebraic_notation(mouse_x, mouse_y)
             speech.say(f'Player moves {piece_name} from {old_position} to {new_position}')
 
-        move((board.pending.x, board.pending.y), (mouse_x, mouse_y))
+        move((board.pending.x, board.pending.y), (mouse_x, mouse_y), store_move=False)
 
         board.pending = None
         board.choices = full((8, 8), False)

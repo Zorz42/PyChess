@@ -48,7 +48,7 @@ def play() -> Optional[tuple]:
     print(best_move, end='\t - \t')
 
     if best_move_found:
-        move(*best_move_found)
+        move(*best_move_found, store_move=False)
         return best_move_found
 
 
