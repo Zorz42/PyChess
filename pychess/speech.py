@@ -11,5 +11,5 @@ def _say(text: str):
 
 
 def say(text):
-    thread = Process(name='TTS', target=_say, args=(text, ))
+    thread = Process(name='TTS', target=_say, args=(text,))
     thread.start()

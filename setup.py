@@ -1,12 +1,10 @@
 from setuptools import setup
 
-
 try:
     from Cython.Build import cythonize
 except ImportError:
     def cythonize(*args, **kwargs):
         return []
-
 
 extensions = cythonize([
     'pychess/util.py',
@@ -17,7 +15,6 @@ extensions = cythonize([
 
 for extension in extensions:
     extension.optional = True
-
 
 setup(
     name='PyChess',

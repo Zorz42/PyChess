@@ -5,11 +5,11 @@ from numpy import full
 
 from . import speech
 from .algorithm import play
+from .messages import display_lost, display_won, display_game_draw, messages_init
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
 from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation
 from .variables import cell_size, window_padding, board
-from .messages import display_lost, display_won, display_game_draw, messages_init
 
 
 def place_pieces():

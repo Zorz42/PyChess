@@ -3,7 +3,7 @@ from typing import Optional
 from numpy import argwhere, inf
 
 from .pieces import Piece
-from .util import move, undo, get_board_state, is_checkmate
+from .util import move, undo, get_board_state
 from .variables import board
 
 
