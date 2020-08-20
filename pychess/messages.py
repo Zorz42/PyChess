@@ -7,7 +7,7 @@ lose_text, lose_text_rect = None, None
 draw_text, draw_text_rect = None, None
 
 
-def messages_init():
+def messages_init() -> None:
     global win_text, win_text_rect, lose_text, lose_text_rect, draw_text, draw_text_rect
     pygame.font.init()
     font = pygame.font.Font('freesansbold.ttf', 50)
@@ -24,13 +24,13 @@ def messages_init():
     draw_text_rect.center = window_padding + cell_size * 4, window_padding + cell_size * 4
 
 
-def display_game_draw(screen: pygame.display):
+def display_game_draw(screen: pygame.display) -> None:
     screen.blit(draw_text, draw_text_rect)
 
 
-def display_lost(screen: pygame.display):
+def display_lost(screen: pygame.display) -> None:
     screen.blit(lose_text, lose_text_rect)
 
 
-def display_won(screen: pygame.display):
+def display_won(screen: pygame.display) -> None:
     screen.blit(win_text, win_text_rect)

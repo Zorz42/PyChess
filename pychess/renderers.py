@@ -9,7 +9,7 @@ green_dot_color = (11, 218, 81)
 green_dot_color_hover = (8, 163, 61)
 
 
-def render_board(screen: pygame.display):
+def render_board(screen: pygame.display) -> None:
     screen.fill((10, 10, 10))
 
     for x in range(8):
@@ -24,12 +24,12 @@ def render_board(screen: pygame.display):
                              )
 
 
-def render_pieces(screen: pygame.display):
+def render_pieces(screen: pygame.display) -> None:
     for piece in board.pieces:
         piece.render(screen)
 
 
-def render_choices(screen: pygame.display):
+def render_choices(screen: pygame.display) -> None:
     mouse_x, mouse_y = pygame.mouse.get_pos()
     mouse_x = int((mouse_x - window_padding) / cell_size)
     mouse_y = int((mouse_y - window_padding) / cell_size)
@@ -48,7 +48,7 @@ hover_surface = pygame.Surface((cell_size, cell_size), pygame.SRCALPHA)
 hover_surface.fill((120, 120, 120, 100))
 
 
-def render_hover(screen: pygame.display):
+def render_hover(screen: pygame.display) -> None:
     mouse_x, mouse_y = pygame.mouse.get_pos()
     if mouse_x > window_padding and mouse_y > window_padding:
         mouse_x = int((mouse_x - window_padding) / cell_size)

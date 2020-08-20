@@ -8,11 +8,11 @@ from .algorithm import play
 from .messages import display_lost, display_won, display_game_draw, messages_init
 from .pieces import Rook, Knight, Bishop, Queen, King, Pawn
 from .renderers import render_board, render_pieces, render_choices, render_hover
-from .util import get_piece, is_checkmate, is_stalemate, convert_to_algebraic_notation, move
+from .util import get_piece, convert_to_algebraic_notation, move, get_game_state
 from .variables import cell_size, window_padding, board
 
 
-def place_pieces():
+def place_pieces() -> None:
     for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
@@ -25,19 +25,13 @@ def place_pieces():
         board.pieces.append(King(4, other_y, is_black))
 
 
-def display_end_messages():
+def display_end_messages() -> None:
     for piece in board.pieces:
         piece.update_board()
-
-    if is_checkmate(board.white_king):
-        board.state = board.State.lost
-    elif is_checkmate(board.black_king):
-        board.state = board.State.won
-    elif is_stalemate(board.black_king) or is_stalemate(board.white_king):
-        board.state = board.State.draw
+    board.state = get_game_state()
 
 
-def init():
+def init() -> pygame.display:
     icon = pygame.image.load(path.dirname(__file__) + '/resources/icon.png')
 
     pygame.init()
@@ -53,7 +47,7 @@ def init():
     return screen
 
 
-def render(screen: pygame.display):
+def render(screen: pygame.display) -> None:
     render_board(screen)
     render_pieces(screen)
     if board.state == board.State.playing:
@@ -69,7 +63,7 @@ def render(screen: pygame.display):
     pygame.display.flip()
 
 
-def handle(screen: pygame.display, event: pygame.event):
+def handle(screen: pygame.display, event: pygame.event) -> None:
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if mouse_x < window_padding or mouse_y < window_padding:
@@ -93,6 +87,7 @@ def handle(screen: pygame.display, event: pygame.event):
 
         if piece:
             board.pieces.remove(piece)
+            board.cached_board[piece.x][piece.y] = None
 
         if variables.use_tts_for_player:
             piece_name = board.pending.__class__.__name__

@@ -31,7 +31,7 @@ class Piece:
         self.update_board()
         return not (~self.scan_board()).all()
 
-    def protect_king(self):
+    def protect_king(self) -> None:
         king = board.black_king if self.black else board.white_king
 
         x: int
@@ -46,7 +46,7 @@ class Piece:
         return self._saved_board
 
     @abstractmethod
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         pass
 
     @property
@@ -60,7 +60,7 @@ class Piece:
         position_weight = self._black_weights[self.y][self.x] if self.black else self._white_weights[self.y][self.x]
         return base_weight + position_weight
 
-    def render(self, screen: pygame.display):
+    def render(self, screen: pygame.display) -> None:
         screen.blit(self.texture, (
             (self.x * cell_size) + window_padding,
             (self.y * cell_size) + window_padding
@@ -108,7 +108,7 @@ class King(Piece):
                     return True
         return False
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
 
         x: int
@@ -141,7 +141,7 @@ class Queen(Piece):
         [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
     ]
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
 
         for orientation in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
@@ -180,7 +180,7 @@ class Rook(Piece):
         [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0],
     ]
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
 
         for orientation in ((0, -1), (-1, 0), (1, 0), (0, 1)):
@@ -218,7 +218,7 @@ class Bishop(Piece):
         [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
     ]
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
 
         for orientation in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -256,7 +256,7 @@ class Knight(Piece):
         [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
     ]
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
 
         target: tuple
@@ -289,7 +289,7 @@ class Pawn(Piece):
         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     ]
 
-    def update_board(self, ignore_king: bool = False):
+    def update_board(self, ignore_king: bool = False) -> None:
         self._saved_board = full((8, 8), False)
         if not 0 < self.y < 7:
             return

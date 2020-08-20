@@ -6,12 +6,10 @@ from .variables import board
 
 
 def get_piece(x: int, y: int) -> Optional['Piece']:
-    #if x >= 8 or y >= 8:
-        #return None
     return board.cached_board[x][y]
 
 
-def move(old: tuple, new: tuple, store_move: bool = True):
+def move(old: tuple, new: tuple, store_move: bool = True) -> Optional['Piece']:
     piece_to_be_eaten = get_piece(new[0], new[1])
     if piece_to_be_eaten:
         board.pieces.remove(piece_to_be_eaten)
@@ -23,15 +21,15 @@ def move(old: tuple, new: tuple, store_move: bool = True):
 
     piece = get_piece(old[0], old[1])
     if piece:
-        board.cached_board[old[0]][old[1]] = None
         piece.x = new[0]
         piece.y = new[1]
+        board.cached_board[old[0]][old[1]] = None
         board.cached_board[new[0]][new[1]] = piece
 
     return piece
 
 
-def undo():
+def undo() -> None:
     if len(board.moves_stack) == 0:
         return
 
@@ -44,30 +42,6 @@ def undo():
         board.cached_board[last_eaten.x][last_eaten.y] = last_eaten
 
 
-def is_check(king) -> bool:
-    return king.in_danger()
-
-
-def is_stale(piece) -> bool:
-    return not piece.can_move()
-
-
-def is_checkmate(king) -> bool:
-    for piece in board.pieces:
-        if king.black == piece.black:
-            if piece.can_move():
-                return False
-    return is_check(king)
-
-
-def is_stalemate(king) -> bool:
-    for piece in board.pieces:
-        if king.black == piece.black:
-            if piece.can_move():
-                return False
-    return not is_check(king)
-
-
 def get_board_state() -> tuple:
     state = full((8, 8), -1)
     for piece in board.pieces:
@@ -75,5 +49,20 @@ def get_board_state() -> tuple:
     return tuple(map(tuple, state))
 
 
-def convert_to_algebraic_notation(x, y):
+def are_pieces_stale(king) -> bool:
+    for piece in board.pieces:
+        if king.black == piece.black and piece.can_move():
+            return False
+    return True
+
+
+def get_game_state() -> board.State:
+    if are_pieces_stale(board.white_king):
+        return board.State.lost if board.white_king.in_danger() else board.State.draw
+    elif are_pieces_stale(board.black_king):
+        return board.State.won if board.white_king.in_danger() else board.State.draw
+    return board.State.playing
+
+
+def convert_to_algebraic_notation(x, y) -> str:
     return 'abcdefgh'[x] + str(8 - y)

@@ -7,7 +7,7 @@ import pygame
 from . import init, handle, render, board
 
 
-def main():
+def main() -> None:
     screen = init()
     running = True
 
@@ -27,7 +27,7 @@ def main():
 
         if int(pygame.time.get_ticks() / 1000) != seconds:
             seconds = int(pygame.time.get_ticks() / 1000)
-            print(f"FPS: {frame_count}")
+            # print(f"FPS: {frame_count}")
             frame_count = 0
 
         clock.tick(60)
