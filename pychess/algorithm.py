@@ -3,7 +3,7 @@ from typing import Optional
 from numpy import argwhere, inf
 
 from .pieces import Piece
-from .util import move, undo, get_board_state
+from .util import move, undo, get_board_state, get_game_state
 from .variables import board
 
 
@@ -11,6 +11,11 @@ def evaluate() -> float:
     result: float = 0
     for piece in board.pieces:
         result += piece.weight
+
+    if result <= -200:
+        if get_game_state() == board.State.won:
+            return -50000
+
     return result
 
 
@@ -45,10 +50,9 @@ def play() -> Optional[tuple]:
             best_move = value
             best_move_found = new_game_move
 
-    print(best_move, end='\t - \t')
-
     if best_move_found:
         move(*best_move_found, store_move=False)
+        print(evaluate(), '\t - \t', best_move, end='\t - \t')
         return best_move_found
 
 
