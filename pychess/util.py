@@ -61,7 +61,7 @@ def get_game_state() -> board.State:
         return board.State.lost if board.white_king.in_danger() else board.State.draw
     elif are_pieces_stale(black=True):
         return board.State.won if board.black_king.in_danger() else board.State.draw
-    return board.State.playing
+    return board.State.won
 
 
 def convert_to_algebraic_notation(x, y) -> str:
