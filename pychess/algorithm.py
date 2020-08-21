@@ -13,7 +13,10 @@ def evaluate() -> float:
         result += piece.weight
 
     if result <= -200:
-        if get_game_state() == board.State.won:
+        state = get_game_state()
+        if state == board.State.draw or state == board.State.lost:
+            return 50000
+        if state == board.State.won:
             return -50000
 
     return result
