@@ -70,10 +70,6 @@ def render_choices(screen: pygame.display) -> None:
                     gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, color)
 
 
-hover_surface = pygame.Surface((cell_size, cell_size), pygame.SRCALPHA)
-hover_surface.fill((120, 120, 120, 100))
-
-
 def render_hover(screen: pygame.display) -> None:
     mouse_x, mouse_y = pygame.mouse.get_pos()
     if mouse_x > window_padding and mouse_y > window_padding:
