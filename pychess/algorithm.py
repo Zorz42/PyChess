@@ -77,7 +77,7 @@ def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> float:
         if state in board.transposition:
             current_score: float = board.transposition[state]
             # current_score: float = minimax(depth - 1, alpha, beta, not maximising)
-            print(board.transposition[state] == current_score)
+            # print(board.transposition[state] == current_score)
         else:
             current_score: float = minimax(depth - 1, alpha, beta, not maximising)
             board.transposition[state] = current_score
