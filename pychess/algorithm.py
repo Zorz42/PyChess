@@ -47,7 +47,7 @@ def play() -> Optional[tuple]:
 
     for new_game_move in new_game_moves:
         move(*new_game_move)
-        value = minimax(3, -inf, inf, False)
+        value = minimax(1, -inf, inf, False)
         undo()
         if value >= best_move:
             best_move = value
@@ -73,19 +73,11 @@ def minimax(depth: int, alpha: int, beta: int, maximising: bool) -> float:
 
         state = get_board_state()
 
-        if state in board.transposition:
-            stored_score: float
-            stored_depth: int
-            stored_score, stored_depth = board.transposition[state]
-
-            if stored_score and stored_depth > depth + 1:
-                current_score: float = stored_score
-            else:
-                current_score: float = minimax(depth - 1, alpha, beta, not maximising)
-                board.transposition[state] = current_score, depth
+        if (state, depth) in board.transposition:
+            current_score: float = board.transposition[(state, depth)]
         else:
             current_score: float = minimax(depth - 1, alpha, beta, not maximising)
-            board.transposition[state] = current_score, depth
+            board.transposition[(state, depth)] = current_score
 
         best_score = max(best_score, current_score) if maximising else min(best_score, current_score)
         undo()

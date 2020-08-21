@@ -1,5 +1,5 @@
 from typing import Optional
-
+from hashlib import sha1
 from numpy import full
 
 from .variables import board
@@ -42,11 +42,11 @@ def undo() -> None:
         board.cached_board[last_eaten.x][last_eaten.y] = last_eaten
 
 
-def get_board_state() -> tuple:
+def get_board_state() -> str:
     state = full((8, 8), -1)
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10
-    return tuple(map(tuple, state))
+    return sha1(state).hexdigest()
 
 
 def are_pieces_stale(black: bool) -> bool:
@@ -60,7 +60,7 @@ def get_game_state() -> board.State:
     if are_pieces_stale(black=False):
         return board.State.lost if board.white_king.in_danger() else board.State.draw
     elif are_pieces_stale(black=True):
-        return board.State.won if board.white_king.in_danger() else board.State.draw
+        return board.State.won if board.black_king.in_danger() else board.State.draw
     return board.State.playing
 
 
