@@ -12,7 +12,8 @@ shadow_radius = 8
 
 def render_background(screen: pygame.display) -> None:
     for i in range(window_padding):
-        pygame.draw.rect(screen, (int(i / 1.75), int(i / 1.75), int(i / 1.75)), (i, i, window_size - i * 2, window_size - i * 2))
+        pygame.draw.rect(screen, (int(i / 1.75), int(i / 1.75), int(i / 1.75)),
+                         (i, i, window_size - i * 2, window_size - i * 2))
 
 
 def render_board(screen: pygame.display) -> None:
@@ -32,8 +33,7 @@ def render_board(screen: pygame.display) -> None:
                 x * cell_size + window_padding,
                 cell_size,
                 cell_size,
-            )
-                             )
+            ))
 
 
 def render_pieces(screen: pygame.display) -> None:
@@ -50,18 +50,24 @@ def render_choices(screen: pygame.display) -> None:
             color = green_dot_color_hover if x == mouse_x and y == mouse_y else green_dot_color
 
             if board.choices[x][y]:
-                x_pos = int(x * cell_size + window_padding + cell_size / 2)
-                y_pos = int(y * cell_size + window_padding + cell_size / 2)
-
-                for i in range(1, shadow_radius + 1):
-                    if (x + y) % 2:
-                        multiplicator = int(30 - 30 / shadow_radius * i) + 170
-                    else:
-                        multiplicator = int(20 - 20 / shadow_radius * i) + 110
-                    shadow_color = (multiplicator, multiplicator, multiplicator)
-                    pygame.draw.circle(screen, shadow_color, (x_pos, y_pos), green_dot_radius + shadow_radius - i)
-                gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, color)
-                gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, color)
+                if get_piece(x, y):
+                    x_pos = int(x * cell_size + window_padding)
+                    y_pos = int(y * cell_size + window_padding)
+                    gfxdraw.box(screen,
+                                (x_pos, y_pos, cell_size, cell_size),
+                                (230, 20, 12, 130))
+                else:
+                    x_pos = int(x * cell_size + window_padding + cell_size / 2)
+                    y_pos = int(y * cell_size + window_padding + cell_size / 2)
+                    for i in range(1, shadow_radius + 1):
+                        if (x + y) % 2:
+                            multiplicator = int(30 - 30 / shadow_radius * i) + 170
+                        else:
+                            multiplicator = int(20 - 20 / shadow_radius * i) + 110
+                        shadow_color = (multiplicator, multiplicator, multiplicator)
+                        pygame.draw.circle(screen, shadow_color, (x_pos, y_pos), green_dot_radius + shadow_radius - i)
+                    gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, color)
+                    gfxdraw.filled_circle(screen, x_pos, y_pos, green_dot_radius, color)
 
 
 hover_surface = pygame.Surface((cell_size, cell_size), pygame.SRCALPHA)
@@ -77,7 +83,9 @@ def render_hover(screen: pygame.display) -> None:
             piece = get_piece(mouse_x, mouse_y)
             if piece and not piece.black:
                 if mouse_x < 8 and mouse_y < 8:
-                    screen.blit(hover_surface, (
+                    gfxdraw.box(screen, (
                         mouse_x * cell_size + window_padding,
-                        mouse_y * cell_size + window_padding
-                    ))
+                        mouse_y * cell_size + window_padding,
+                        cell_size,
+                        cell_size
+                    ), (120, 120, 120, 100))
