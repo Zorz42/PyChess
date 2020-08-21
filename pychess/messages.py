@@ -2,12 +2,19 @@ import pygame
 from pygame import gfxdraw
 from copy import copy
 
-from .variables import window_padding, cell_size
+from .variables import window_padding, cell_size, board
 
 win_text, win_rect = None, pygame.Rect((0, 0, 0, 0))
 lose_text, lose_rect = None, pygame.Rect((0, 0, 0, 0))
 draw_text, draw_rect = None, pygame.Rect((0, 0, 0, 0))
 play_again_text, play_again_rect = None, pygame.Rect((0, 0, 0, 0))
+
+mouse_clicked = False
+
+
+def messages_handle(event: pygame.event):
+    global mouse_clicked
+    mouse_clicked = event.type == pygame.MOUSEBUTTONDOWN
 
 
 def in_rect(x: int, y: int, rect: pygame.Rect):
@@ -24,6 +31,8 @@ def draw_play_again_button(screen: pygame.display):
     mouse_x, mouse_y = pygame.mouse.get_pos()
     if in_rect(mouse_x, mouse_y, text_rect_shadow):
         gfxdraw.box(screen, text_rect_shadow, (0, 0, 0, 120))
+        if mouse_clicked:
+            board.state = board.State.initializing
     else:
         gfxdraw.box(screen, text_rect_shadow, (0, 0, 0, 80))
 

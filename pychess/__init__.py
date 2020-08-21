@@ -14,6 +14,7 @@ from .variables import cell_size, window_padding, board, use_tts_for_computer, u
 
 
 def place_pieces() -> None:
+    board.pieces = []
     for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
@@ -36,12 +37,13 @@ def init() -> pygame.display:
 
     screen = pygame.display.set_mode((window_size, window_size))
 
-    place_pieces()
-
     return screen
 
 
 def render(screen: pygame.display) -> None:
+    if board.state == board.State.initializing:
+        place_pieces()
+        board.state = board.State.playing
     render_board(screen)
     render_pieces(screen)
 

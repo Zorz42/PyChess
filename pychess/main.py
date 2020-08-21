@@ -5,6 +5,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'true'
 import pygame
 
 from . import init, handle, render, board
+from .messages import messages_handle
 
 
 def main() -> None:
@@ -19,6 +20,8 @@ def main() -> None:
                 running = False
             elif board.state == board.State.playing:
                 handle(screen, event)
+            else:
+                messages_handle(event)
         render(screen)
 
         clock.tick(60)

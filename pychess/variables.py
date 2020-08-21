@@ -3,12 +3,13 @@ from numpy import full, ndarray, empty
 
 class Board:
     class State:
+        initializing = -1
         playing = 0
         won = 1
         lost = 2
         draw = 3
 
-    state: int = State.playing
+    state: int = State.initializing
 
     choices: ndarray = full((8, 8), False)
     pieces: list = []

@@ -47,7 +47,7 @@ def play() -> Optional[tuple]:
 
     for new_game_move in new_game_moves:
         move(*new_game_move)
-        value = minimax(1, -inf, inf, False)
+        value = minimax(3, -inf, inf, False)
         undo()
         if value >= best_move:
             best_move = value
