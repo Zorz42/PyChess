@@ -42,11 +42,11 @@ def undo() -> None:
         board.cached_board[last_eaten.x][last_eaten.y] = last_eaten
 
 
-def get_board_state(depth: int) -> int:
+def get_board_state() -> tuple:
     state = full((8, 8), -1)
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10
-    return hash((tuple(map(tuple, state)), depth))
+    return tuple(map(tuple, state))
 
 
 def are_pieces_stale(black: bool) -> bool:
