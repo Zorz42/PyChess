@@ -48,14 +48,13 @@ def render_choices(screen: pygame.display) -> None:
     for x in range(8):
         for y in range(8):
             color = green_dot_color_hover if x == mouse_x and y == mouse_y else green_dot_color
+            red_color = (255, 23, 14, 130) if x == mouse_x and y == mouse_y else (230, 20, 12, 130)
 
             if board.choices[x][y]:
                 if get_piece(x, y):
                     x_pos = int(x * cell_size + window_padding)
                     y_pos = int(y * cell_size + window_padding)
-                    gfxdraw.box(screen,
-                                (x_pos, y_pos, cell_size, cell_size),
-                                (230, 20, 12, 130))
+                    gfxdraw.box(screen, (x_pos, y_pos, cell_size, cell_size), red_color)
                 else:
                     x_pos = int(x * cell_size + window_padding + cell_size / 2)
                     y_pos = int(y * cell_size + window_padding + cell_size / 2)
