@@ -12,7 +12,7 @@ def evaluate() -> float:
     for piece in board.pieces:
         result += piece.weight
 
-    if result <= -200:
+    if result <= -200 or len(board.pieces) < 8:
         state = get_game_state()
         if state == board.State.draw or state == board.State.lost:
             return 50000

@@ -57,11 +57,20 @@ def are_pieces_stale(black: bool) -> bool:
 
 
 def get_game_state() -> board.State:
+    board_state = get_board_state()
+
+    if board_state in board.state_cache:
+        return board.state_cache[board_state]
+
     if are_pieces_stale(black=False):
-        return board.State.lost if board.white_king.in_danger() else board.State.draw
+        game_state = board.State.lost if board.white_king.in_danger() else board.State.draw
     elif are_pieces_stale(black=True):
-        return board.State.won if board.black_king.in_danger() else board.State.draw
-    return board.State.playing
+        game_state = board.State.won if board.black_king.in_danger() else board.State.draw
+    else:
+        game_state = board.State.playing
+
+    board.state_cache[board_state] = game_state
+    return game_state
 
 
 def convert_to_algebraic_notation(x, y) -> str:

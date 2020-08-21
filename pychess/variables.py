@@ -22,6 +22,7 @@ class Board:
     eaten_stack = []
 
     transposition = {}
+    state_cache = {}
 
     cached_board = empty((8, 8), dtype=object)
 
