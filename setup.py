@@ -8,8 +8,8 @@ except ImportError:
 
 extensions = cythonize([
     'pychess/__init__.py',
-    # 'pychess/__main__.py',
     'pychess/algorithm.py',
+    'pychess/main.py',
     'pychess/messages.py',
     'pychess/pieces.py',
     'pychess/renderers.py',

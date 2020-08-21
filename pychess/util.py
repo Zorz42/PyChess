@@ -42,24 +42,24 @@ def undo() -> None:
         board.cached_board[last_eaten.x][last_eaten.y] = last_eaten
 
 
-def get_board_state() -> tuple:
+def get_board_state() -> int:
     state = full((8, 8), -1)
     for piece in board.pieces:
         state[piece.x][piece.y] = piece.texture_y + piece.black * 10
-    return tuple(map(tuple, state))
+    return hash(tuple(map(tuple, state)))
 
 
-def are_pieces_stale(king) -> bool:
+def are_pieces_stale(black: bool) -> bool:
     for piece in board.pieces:
-        if king.black == piece.black and piece.can_move():
+        if black == piece.black and piece.can_move():
             return False
     return True
 
 
 def get_game_state() -> board.State:
-    if are_pieces_stale(board.white_king):
+    if are_pieces_stale(black=False):
         return board.State.lost if board.white_king.in_danger() else board.State.draw
-    elif are_pieces_stale(board.black_king):
+    elif are_pieces_stale(black=True):
         return board.State.won if board.white_king.in_danger() else board.State.draw
     return board.State.playing
 
