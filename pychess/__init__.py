@@ -2,7 +2,7 @@ from os import path
 from time import time
 
 import pygame
-from numpy import full
+from numpy import full, empty
 
 from . import speech
 from .algorithm import play
@@ -15,6 +15,8 @@ from .variables import cell_size, window_padding, board, use_tts_for_computer, u
 
 def place_pieces() -> None:
     board.pieces = []
+    board.cached_board = empty((8, 8), dtype=object)
+
     for is_black in (True, False):
         for pawn_x in range(8):
             board.pieces.append(Pawn(pawn_x, 1 if is_black else 6, is_black))
