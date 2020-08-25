@@ -27,7 +27,7 @@ def render_board(screen: pygame.display) -> None:
                       ))
     for x in range(8):
         for y in range(8):
-            color = (200, 200, 200) if (x + y) % 2 else (130, 130, 130)
+            color = (130, 130, 130) if (x + y) % 2 else (200, 200, 200)
             pygame.draw.rect(screen, color, (
                 y * cell_size + window_padding,
                 x * cell_size + window_padding,
@@ -60,9 +60,9 @@ def render_choices(screen: pygame.display) -> None:
                     y_pos = int(y * cell_size + window_padding + cell_size / 2)
                     for i in range(1, shadow_radius + 1):
                         if (x + y) % 2:
-                            multiplicator = int(30 - 30 / shadow_radius * i) + 170
-                        else:
                             multiplicator = int(20 - 20 / shadow_radius * i) + 110
+                        else:
+                            multiplicator = int(30 - 30 / shadow_radius * i) + 170
                         shadow_color = (multiplicator, multiplicator, multiplicator)
                         pygame.draw.circle(screen, shadow_color, (x_pos, y_pos), green_dot_radius + shadow_radius - i)
                     gfxdraw.aacircle(screen, x_pos, y_pos, green_dot_radius, color)
